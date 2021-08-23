@@ -1,0 +1,21 @@
+objetivos especificos, hitos y actividades:
+
+Nosotros propusimos 4 objetivos principales y para cada uno de ellos planteamos hitos sub divididos en actividades que lo conforman para cumplir el objetivo. 
+Por ejemplo el primero es la etapa de investigación previa al proyecto. Esto incluye:
+La investigación de todos los conceptos desconocidos que necesitaremos saber para desarrollar el proyecto,
+Esta presentación de la propuesta y elcronograma a seguir, 
+Entre otros.
+
+Luego esta la etapa, esta la de 
+Definir los requerimientos funcionales y no funcionales del software
+
+Después encontramos la etapa de modelado, con base en lo que se definió en los requerimientos
+Modelaremos las estructuras de datos mediante un diagrama de bloques, diagrama de entidad-relación, de casos de uso, entre otros  que expliquen el funcionamiento y la arquitectura del aplicativo y de esta manera mantener un flujo claro en el desarrollo.
+
+En la etapa de implementación, se Diseña el algoritmo que recoja la información de la red local (Dirección IPv6/4, nombre o sistema operativo, servicio de red, tiempo de inicio, tiempo de fin, y total de tiempo, estos tiempos en Segundos.).
+Tambien se realizar conexión y almacenamiento de esta información a la base de datos.
+y el Diseño de la interfaz de usuario gráfica en el sitio web. esta etapa
+
+Por ultimo tenemos la etapa de pruebas, en donde se Establece un conjunto de casos de prueba para implementar el control de la funcionalidad  del software mediante pruebas unitarias y de integración. Una vez esté listo el aplicativo al 100% se finalizará con un manual de uso para explicar todos los módulos y funcionalidades de la aplicación.
+
+Muchas gracias :)
