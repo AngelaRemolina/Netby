@@ -1,7 +1,7 @@
 {
   "name": "dev",
   "version": "1.0.0",
-  "description": "- What is Distyle?\r - Want to help us depevelop?\r - Contact us",
+  "description": "NetBy",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/"
@@ -31,10 +31,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/KillTheReptiles/Distyle.git"
+    "url": "git+https://github.com/angelasofiaremolinagutierrez/netby.git"
   },
   "bugs": {
-    "url": "https://github.com/KillTheReptiles/Distyle/issues"
+    "url": "https://github.com/angelasofiaremolinagutierrez/netby/issues"
   },
-  "homepage": "https://github.com/KillTheReptiles/Distyle#readme"
+  "homepage": "https://github.com/angelasofiaremolinagutierrez/netby"
 }

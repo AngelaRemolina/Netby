@@ -1,4 +1,6 @@
-USE distyle;
+create database netby;
+
+USE netby;
 
 -- TABLE USER
 -- all pasword wil be encrypted using SHA1
