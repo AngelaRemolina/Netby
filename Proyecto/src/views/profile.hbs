@@ -1,0 +1,54 @@
+<br>
+<div class="mb-3">
+    <div class="container-p-4">
+        <div class="row">
+            <div class="col-md-4 mx-auto">
+                <div class="card">
+                    <div class="card-body">
+                        <form action="/profile/{{user.id}}" method="POST">
+                            <div class="form-group">
+                                <input type="text" value="{{user.fullname}}" class="form-control" name="fullname"
+                                    placeholder="Full Name" autofocus>
+                            </div>
+                            <div class="mb-3 row">
+                                <label  class="col-sm-2 col-form-label">Username</label>
+                                <div class="col-sm-10">
+                                    <input type="text" readonly class="form-control-plaintext"
+                                        value="{{user.username}}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input type="email" value="{{user.email}}" class="form-control" name="email"
+                                    aria-describedby="emailHelp" placeholder="Email">
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-success btn-block">
+                                    Send
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{!-- <div class="container p-4">
+    <div class="row">
+        <div class="col-md-4 mx-auto">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3>Welcome {{user.fullname}}</h3>
+                    <h4>{{user.username}}</h4>
+                    <a href="/links" class="btn btn-primary m-4">
+                        Save your links
+                    </a>
+                    <a href="/releases" class="btn btn-primary m-4">
+                        Release Music!
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> --}}

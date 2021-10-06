@@ -1,0 +1,97 @@
+<div class="container justify-content-center">
+    <div class="row justify-content-center">
+        <li>
+            <button type="button" class="btn btn-outline-primary">
+                <a href="/dashboard/users/add/"> ADD</a>
+            </button>
+        </li>
+    </div>
+</div>
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Tables</h1>
+    <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
+        For more information about DataTables, please visit the <a target="_blank"
+            href="https://datatables.net">official DataTables documentation</a>.</p>
+
+    <!-- DataTale -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+
+                        <tr id="table-header" class="">
+                            <th>STATUS</th>
+                            <th data-priority="1">ID</th>
+                            <th data-priority="2">USERNAME</th>
+                            <th data-priority="3">FULL NAME</th>
+                            <th data-priority="4">EMAIL</th>
+                            <th data-priority="5">ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each users}}
+                        <tr>
+                            <td><span class="{{status}}"></span></td>
+                            <td>
+                                {{id}}
+                            </td>
+                            <td>
+                                {{username}}
+                            </td>
+                            <td>
+                                {{fullname}}
+                            </td>
+                            <td>
+                                {{email}}
+                            </td>
+                            <td>
+                                <div class="header-tools">
+                                    <div class="tools">
+                                        <ul>
+                                            <li>
+                                                <button data-bs-toggle="modal" data-bs-target="#">
+                                                    <a class="material-icons"
+                                                        href="/dashboard/users/edit/{{id}}">edit</a>
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button>
+                                                    <a class="material-icons "
+                                                        href="/dashboard/users/delete/{{id}}">delete</a>
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Optional JavaScript -->
+
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+
+<!--    Datatables-->
+<script src="http://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js" defer></script>
+<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.20/js/dataTables.foundation.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#dataTable').DataTable();
+    });
+</script>

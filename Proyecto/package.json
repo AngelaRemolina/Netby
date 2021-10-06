@@ -1,0 +1,40 @@
+{
+  "name": "dev",
+  "version": "1.0.0",
+  "description": "- What is Distyle?\r - Want to help us depevelop?\r - Contact us",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "connect-flash": "^0.1.1",
+    "datatables": "^1.10.18",
+    "datatables.net-dt": "^1.10.25",
+    "express": "^4.17.1",
+    "express-handlebars": "^5.3.4",
+    "express-mysql-session": "^2.1.7",
+    "express-session": "^1.17.2",
+    "express-validator": "^6.12.2",
+    "jquery": "^3.6.0",
+    "morgan": "^1.10.0",
+    "mysql": "^2.18.1",
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0",
+    "timeago.js": "^4.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.13"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KillTheReptiles/Distyle.git"
+  },
+  "bugs": {
+    "url": "https://github.com/KillTheReptiles/Distyle/issues"
+  },
+  "homepage": "https://github.com/KillTheReptiles/Distyle#readme"
+}
