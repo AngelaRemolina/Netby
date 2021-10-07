@@ -44,6 +44,8 @@ passport.use('local.signup', new LocalStrategy({
     // Saving in the Database
     const result = await pool.query('INSERT INTO User SET ? ', newUser);
     newUser.ID_U = result.insertId;
+    // asign default role 0 (client)
+    await pool.query('INSERT INTO user_type (User_ID_U,user_role) VALUES ?', (newUser.ID_U,0));
     return done(null, newUser);
 }));
 

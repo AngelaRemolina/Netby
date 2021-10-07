@@ -12,35 +12,36 @@ router.get('/dashboard', isLoggedIn, async (req, res) => {
 //Dahsboard users
 
 router.get('/dashboard/users', isLoggedIn, async (req, res) => {
-    const users = await pool.query('SELECT * User');// It send to the list and create an array with the users
+    const users = await pool.query('SELECT * FROM User');// It send to the list and create an array with the users
     res.render('dashboard/users/list', { users: users });
 });
 
 router.get('/dashboard/users/edit/:id', isLoggedIn, async (req, res) => {
     const { id } = req.params;
-    const users = await pool.query('SELECT * User WHERE ID_U = ?', [id]);
+    const users = await pool.query('SELECT * FROM User WHERE ID_U = ?', [id]);
     res.render('./dashboard/users/edit', { user: users[0] });
 });
 
 router.post('/dashboard/users/edit/:id', isLoggedIn, async (req, res) => {
+    // TODO FIX THIS METHOD: not updating database
     const { id } = req.params;
-    const { name, username, email, role, status } = req.body;
+    const { name, email, user_role} = req.body;
     const editUser = {
         name,
-        username,
-        email,
-        role,
-        status
+        email
     };
-    await pool.query('UPDATE users set ? WHERE ID_U = ?', [editUser, id]);
+    const userRole = {
+        user_role
+    };
+    await pool.query('UPDATE User set ? WHERE ID_U = ?', [editUser, id]);
+    // await pool.query('UPDATE user_type set ? WHERE ID_U = ?', [userRole, id]);
     req.flash('success', 'User updated successfully');
     res.redirect('/dashboard/users');
 });
 
 router.get('/dashboard/users/delete/:id', isLoggedIn, async (req, res) => {
     const { id } = req.params;
-    await pool.query('DELETE FROM links WHERE user_id = ?', [id]);
-    await pool.query('DELETE User WHERE ID_U = ?', [id]);
+    await pool.query('DELETE FROM user WHERE ID_U = ?', [id]);
     req.flash('success', 'User deleted successfully');
     res.redirect('/dashboard/users');
 });
@@ -59,7 +60,7 @@ router.post('/dashboard/users/add', isLoggedIn, async (req, res) => {
         status,
         password
     };
-    await pool.query('INSERT INTO users set ?', [newUser]);
+    await pool.query('INSERT INTO User set ?', [newUser]);
     req.flash('success', 'User saved successfully');
     res.redirect('/dashboard/users');
 });

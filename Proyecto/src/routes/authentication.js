@@ -8,14 +8,6 @@ router.get('/signup', isNotLoggedIn,(req, res) => {
     res.render('auth/signup')
 });
 
-// router.post('/signup',(req,res) =>{
-//     passport.authenticate('local.signup', { THIS JUST IS ANOTHER WAY FOR MAKE THE AUTH WITH PASSPORT
-//         successRedirect: '/profile',
-//         failureRedirect: '/signup',
-//         failureFlash: true
-//     });
-// });
-
 router.post('/signup', isNotLoggedIn, passport.authenticate('local.signup', {
     successRedirect: '/dashboard',
     failureRedirect: '/signup',

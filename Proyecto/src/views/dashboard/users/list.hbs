@@ -28,21 +28,19 @@
                         <tr id="table-header" class="">
                             <th>STATUS</th>
                             <th data-priority="1">ID</th>
-                            <th data-priority="2">USERNAME</th>
-                            <th data-priority="3">FULL NAME</th>
-                            <th data-priority="4">EMAIL</th>
-                            <th data-priority="5">ACTIONS</th>
+                            <th data-priority="2">FULL NAME</th>
+                            <th data-priority="3">EMAIL</th>
+                            <th data-priority="4">ACTIONS</th>
                         </tr>
                     </thead>
                     <tbody>
                         {{#each users}}
                         <tr>
-                            <td><span class="{{status}}"></span></td>
                             <td>
-                                {{id}}
+                                <span class="{{status}}"></span>
                             </td>
                             <td>
-                                {{username}}
+                                {{ID_U}}
                             </td>
                             <td>
                                 {{name}}
@@ -53,20 +51,13 @@
                             <td>
                                 <div class="header-tools">
                                     <div class="tools">
-                                        <ul>
-                                            <li>
-                                                <button data-bs-toggle="modal" data-bs-target="#">
-                                                    <a class="material-icons"
-                                                        href="/dashboard/users/edit/{{id}}">edit</a>
-                                                </button>
-                                            </li>
-                                            <li>
-                                                <button>
-                                                    <a class="material-icons "
-                                                        href="/dashboard/users/delete/{{id}}">delete</a>
-                                                </button>
-                                            </li>
-                                        </ul>
+                                        <button data-bs-toggle="modal" data-bs-target="#">
+                                            <a class="material-icons" href="/dashboard/users/edit/{{ID_U}}">edit</a>
+                                        </button>
+
+                                        <button>
+                                            <a class="material-icons " href="/dashboard/users/delete/{{ID_U}}">delete</a>
+                                        </button>
                                     </div>
                                 </div>
                             </td>

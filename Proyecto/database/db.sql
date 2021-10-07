@@ -17,8 +17,6 @@ SET FOREIGN_KEY_CHECKS = 0;
 ALTER TABLE user
   MODIFY ID_U INT NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 1;
   
-SET FOREIGN_KEY_CHECKS = 1;
-
 -- -----------------------------------------------------
 -- Table Capture
 -- -----------------------------------------------------
@@ -40,10 +38,9 @@ COMMENT = 'Se requiere sacar el tiempo total de la captura el cual es la resta e
 -- Table user_type
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS netby.user_type (
-  ID_user_type VARCHAR(45) NOT NULL,
   User_ID_U INT NOT NULL,
-  Description VARCHAR(100) NOT NULL COMMENT 'Especificacion del Tipo de Persona que es el ususario.\n\nEjemplo: El usuario 1 es tipo administrador',
-  PRIMARY KEY (ID_user_type, User_ID_U),
+  user_role INT NOT NULL COMMENT 'Especificacion del Tipo de Persona que es el ususario.\n\nEjemplo: El usuario 1 es tipo administrador',
+  PRIMARY KEY (User_ID_U),
   CONSTRAINT fk_user_type_User1
     FOREIGN KEY (User_ID_U)
     REFERENCES netby.User (ID_U)
@@ -86,5 +83,7 @@ CREATE TABLE IF NOT EXISTS netby.Capture_has_Device (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 COMMENT = 'Tabla que relaciona las capturas con el dispositivo, ya que un dispositivo puede tener muchas capturas y viceversa.\n\nlos atributos estan dispuestos a cambios.';
+
+SET FOREIGN_KEY_CHECKS = 1;
 
 SET @@global.sql_mode= '';
