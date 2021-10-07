@@ -22,7 +22,6 @@ CREATE TABLE IF NOT EXISTS Capture (
   start_time VARCHAR(45) NOT NULL COMMENT 'Tiempo en el que se empezo la captura',
   end_time VARCHAR(45) NOT NULL COMMENT 'Tiempo en el que se termina  la captura',
   PRIMARY KEY (ID_C, User_ID_U),
-  INDEX fk_Capture_User1_idx (User_ID_U ASC) VISIBLE,
   CONSTRAINT fk_Capture_User1
     FOREIGN KEY (User_ID_U)
     REFERENCES netby.User (ID_U)
@@ -70,8 +69,6 @@ CREATE TABLE IF NOT EXISTS netby.Capture_has_Device (
   protocol VARCHAR(45) NOT NULL COMMENT 'Nombre de los  protocolos que se esten registrando.',
   shared VARCHAR(100) NULL COMMENT 'Correo de la persona que compartió la capura. Si esta captura no es compartida, el campo estará vacio.',
   PRIMARY KEY (Capture_ID_C, Capture_User_ID_U, Device_ID_D),
-  INDEX fk_Capture_has_Device_Device1_idx (Device_ID_D ASC) VISIBLE,
-  INDEX fk_Capture_has_Device_Capture1_idx (Capture_ID_C ASC, Capture_User_ID_U ASC) VISIBLE,
   CONSTRAINT fk_Capture_has_Device_Capture1
     FOREIGN KEY (Capture_ID_C , Capture_User_ID_U)
     REFERENCES netby.Capture (ID_C , User_ID_U)
