@@ -9,15 +9,16 @@ passport.use('local.signin', new LocalStrategy({
     passwordField: 'password',
     passReqToCallback: true
 }, async (req, email, password, done) => {
-    const rows = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+    const rows = await pool.query('SELECT * FROM User WHERE email = ?', [email]);
     if (rows.length > 0) {
         const user = rows[0];
         const validPassword = await helpers.matchPassword(password, user.password)
+        console.log(validPassword);
         if (validPassword) {
-            if(user.username == null){
+            if(user.name == null){
                 done(null, user, req.flash('success', 'Welcome!'));
             } else{
-                done(null, user, req.flash('success', 'Welcome ' + user.username));
+                done(null, user, req.flash('success', 'Welcome ' + user.name));
             }
         } else {
             done(null, false, req.flash('message', 'Incorrect  Email or Password'));
@@ -33,24 +34,24 @@ passport.use('local.signup', new LocalStrategy({
     passReqToCallback: true
 }, async (req, email, password, done) => {
 
-    const { fullname } = req.body;
+    const { name } = req.body;
     let newUser = {
         email,
         password,
-        fullname
+        name
     };
     newUser.password = await helpers.encryptPassword(password);
     // Saving in the Database
-    const result = await pool.query('INSERT INTO users SET ? ', newUser);
-    newUser.id = result.insertId;
+    const result = await pool.query('INSERT INTO User SET ? ', newUser);
+    newUser.ID_U = result.insertId;
     return done(null, newUser);
 }));
 
 passport.serializeUser((user, done) => {
-    done(null, user.id);
+    done(null, user.ID_U);
 });
 
 passport.deserializeUser(async (id, done) => {
-    const rows = await pool.query('SELECT * FROM users WHERE id = ?', [id]);
+    const rows = await pool.query('SELECT * FROM User WHERE ID_U = ?', [id]);
     done(null, rows[0]);
 });

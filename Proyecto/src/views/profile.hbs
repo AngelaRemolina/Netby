@@ -7,7 +7,7 @@
                     <div class="card-body">
                         <form action="/profile/{{user.id}}" method="POST">
                             <div class="form-group">
-                                <input type="text" value="{{user.fullname}}" class="form-control" name="fullname"
+                                <input type="text" value="{{user.name}}" class="form-control" name="name"
                                     placeholder="Full Name" autofocus>
                             </div>
                             <div class="mb-3 row">
@@ -39,7 +39,7 @@
         <div class="col-md-4 mx-auto">
             <div class="card text-center">
                 <div class="card-body">
-                    <h3>Welcome {{user.fullname}}</h3>
+                    <h3>Welcome {{user.name}}</h3>
                     <h4>{{user.username}}</h4>
                     <a href="/links" class="btn btn-primary m-4">
                         Save your links

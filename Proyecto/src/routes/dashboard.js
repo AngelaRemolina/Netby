@@ -12,27 +12,27 @@ router.get('/dashboard', isLoggedIn, async (req, res) => {
 //Dahsboard users
 
 router.get('/dashboard/users', isLoggedIn, async (req, res) => {
-    const users = await pool.query('SELECT * FROM users');// It send to the list and create an array with the users
+    const users = await pool.query('SELECT * User');// It send to the list and create an array with the users
     res.render('dashboard/users/list', { users: users });
 });
 
 router.get('/dashboard/users/edit/:id', isLoggedIn, async (req, res) => {
     const { id } = req.params;
-    const users = await pool.query('SELECT * FROM users WHERE id = ?', [id]);
+    const users = await pool.query('SELECT * User WHERE ID_U = ?', [id]);
     res.render('./dashboard/users/edit', { user: users[0] });
 });
 
 router.post('/dashboard/users/edit/:id', isLoggedIn, async (req, res) => {
     const { id } = req.params;
-    const { fullname, username, email, role, status } = req.body;
+    const { name, username, email, role, status } = req.body;
     const editUser = {
-        fullname,
+        name,
         username,
         email,
         role,
         status
     };
-    await pool.query('UPDATE users set ? WHERE id = ?', [editUser, id]);
+    await pool.query('UPDATE users set ? WHERE ID_U = ?', [editUser, id]);
     req.flash('success', 'User updated successfully');
     res.redirect('/dashboard/users');
 });
@@ -40,7 +40,7 @@ router.post('/dashboard/users/edit/:id', isLoggedIn, async (req, res) => {
 router.get('/dashboard/users/delete/:id', isLoggedIn, async (req, res) => {
     const { id } = req.params;
     await pool.query('DELETE FROM links WHERE user_id = ?', [id]);
-    await pool.query('DELETE FROM users WHERE ID = ?', [id]);
+    await pool.query('DELETE User WHERE ID_U = ?', [id]);
     req.flash('success', 'User deleted successfully');
     res.redirect('/dashboard/users');
 });
@@ -50,9 +50,9 @@ router.get('/dashboard/users/add', isLoggedIn, (req, res) => {
 });
 
 router.post('/dashboard/users/add', isLoggedIn, async (req, res) => {
-    const { fullname, username, email, role, status, password } = req.body;
+    const { name, username, email, role, status, password } = req.body;
     const newUser = {
-        fullname,
+        name,
         username,
         email,
         role,

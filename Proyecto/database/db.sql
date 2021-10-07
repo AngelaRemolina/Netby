@@ -8,10 +8,16 @@ CREATE TABLE IF NOT EXISTS User (
   ID_U INT NOT NULL COMMENT 'El ID con el que se reconcera el usuario para el sistema.',
   name VARCHAR(45) NOT NULL COMMENT 'Nombre Completo del Usurio ',
   email VARCHAR(100) NOT NULL COMMENT 'Correo electronico del ususario con el que desea ingresar a el sistema',
-  password VARCHAR(45) NOT NULL COMMENT 'Contraseña de ingreso del usuario, el cual tiene que se mayor a 8 caracteres.',
+  password VARCHAR(60) NOT NULL COMMENT 'Contraseña de ingreso del usuario, el cual tiene que se mayor a 8 caracteres.',
   PRIMARY KEY (ID_U))
 COMMENT = 'Tabla en la que se almacena la información de registro de las personas';
 
+SET FOREIGN_KEY_CHECKS = 0;
+
+ALTER TABLE user
+  MODIFY ID_U INT NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 1;
+  
+SET FOREIGN_KEY_CHECKS = 1;
 
 -- -----------------------------------------------------
 -- Table Capture
@@ -81,3 +87,4 @@ CREATE TABLE IF NOT EXISTS netby.Capture_has_Device (
     ON UPDATE NO ACTION)
 COMMENT = 'Tabla que relaciona las capturas con el dispositivo, ya que un dispositivo puede tener muchas capturas y viceversa.\n\nlos atributos estan dispuestos a cambios.';
 
+SET @@global.sql_mode= '';
