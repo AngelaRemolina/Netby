@@ -1,71 +1,86 @@
-create database netby;
-
+CREATE SCHEMA IF NOT EXISTS netby DEFAULT CHARACTER SET utf8;
 USE netby;
 
--- TABLE USER
--- all pasword wil be encrypted using SHA1
-CREATE TABLE users (
-  id INT(11) NOT NULL,
-  email VARCHAR(150) NOT NULL,
-  username VARCHAR(16),
-  password VARCHAR(60) NOT NULL,
-  fullname VARCHAR(100) NOT NULL,
-  role VARCHAR(20),
-  logo VARCHAR(100),
-  status VARCHAR(30)
-);
-
-ALTER TABLE users
-  ADD PRIMARY KEY (id);
-
-ALTER TABLE users
-  MODIFY id INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 1;
-
-ALTER TABLE users
-	ADD created_at timestamp NOT NULL DEFAULT current_timestamp;
-DESCRIBE users;
-
-SELECT * FROM users;
-
--- LINKS TABLE
-CREATE TABLE links (
-  id INT NOT NULL,
-  title VARCHAR(150) NOT NULL,
-  url VARCHAR(255) NOT NULL,
-  description TEXT,
-  user_id INT(11),
-  created_at timestamp NOT NULL DEFAULT current_timestamp,
-  CONSTRAINT fk_user FOREIGN KEY(user_id) REFERENCES users(id)
-);
-
--- RELEASES TABLE
-CREATE TABLE releases (
-  id INT NOT NULL,
-  release_type VARCHAR(10),
-  title VARCHAR(150) NOT NULL,
-  artists VARCHAR(150) NOT NULL,
-  genre VARCHAR(90),
-  user_id INT,
-  created_at timestamp NOT NULL DEFAULT current_timestamp,
-  CONSTRAINT fk_user_releases FOREIGN KEY(user_id) REFERENCES users(id)
-);
-
-ALTER TABLE releases ADD CONSTRAINT ck_release_type
-   check (release_type in ('EP', 'Single', 'Album'));
-
-ALTER TABLE links
-  ADD PRIMARY KEY (id);
-
-ALTER TABLE links
-  MODIFY id INT NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 2;
-
-ALTER TABLE releases
-  MODIFY id INT NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 2;
-
-DESCRIBE links;
+-- -----------------------------------------------------
+-- Table User
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS User (
+  ID_U INT NOT NULL COMMENT 'El ID con el que se reconcera el usuario para el sistema.',
+  name VARCHAR(45) NOT NULL COMMENT 'Nombre Completo del Usurio ',
+  email VARCHAR(100) NOT NULL COMMENT 'Correo electronico del ususario con el que desea ingresar a el sistema',
+  password VARCHAR(45) NOT NULL COMMENT 'Contraseña de ingreso del usuario, el cual tiene que se mayor a 8 caracteres.',
+  PRIMARY KEY (ID_U))
+COMMENT = 'Tabla en la que se almacena la información de registro de las personas';
 
 
-ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'andresdiaz123';
+-- -----------------------------------------------------
+-- Table Capture
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS Capture (
+  ID_C INT NOT NULL COMMENT 'Numero que con el que se identifica la captura',
+  User_ID_U INT NOT NULL,
+  start_time VARCHAR(45) NOT NULL COMMENT 'Tiempo en el que se empezo la captura',
+  end_time VARCHAR(45) NOT NULL COMMENT 'Tiempo en el que se termina  la captura',
+  PRIMARY KEY (ID_C, User_ID_U),
+  INDEX fk_Capture_User1_idx (User_ID_U ASC) VISIBLE,
+  CONSTRAINT fk_Capture_User1
+    FOREIGN KEY (User_ID_U)
+    REFERENCES netby.User (ID_U)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+COMMENT = 'Se requiere sacar el tiempo total de la captura el cual es la resta entre TiempoFin y TiempoInicio.';
 
-SELECT * FROM links;
-SELECT * FROM users;
+
+-- -----------------------------------------------------
+-- Table user_type
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS netby.user_type (
+  ID_user_type VARCHAR(45) NOT NULL,
+  User_ID_U INT NOT NULL,
+  Description VARCHAR(100) NOT NULL COMMENT 'Especificacion del Tipo de Persona que es el ususario.\n\nEjemplo: El usuario 1 es tipo administrador',
+  PRIMARY KEY (ID_user_type, User_ID_U),
+  CONSTRAINT fk_user_type_User1
+    FOREIGN KEY (User_ID_U)
+    REFERENCES netby.User (ID_U)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+COMMENT = 'Tabla que nos define el tipo de persona en el sistema. El cual pueden ser deTtipo administrador o de Tipo Usuario.';
+
+
+-- -----------------------------------------------------
+-- Table Device
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS netby.Device (
+  ID_D INT NOT NULL COMMENT 'ID con el que el sistema reconocera el dispositivo.',
+  Nombre_D VARCHAR(45) NOT NULL COMMENT 'Nombre del dispositivo, tambien se le puede poner el nombre de su sistema operativo',
+  DirecciónIPv4_D VARCHAR(45) NOT NULL COMMENT 'Dirreccion IPV4 del dispositivo',
+  DirecciónIPv6_D VARCHAR(45) NOT NULL COMMENT 'Dirreccion IPV4 del dispositivo',
+  PRIMARY KEY (ID_D))
+COMMENT = 'Tabla los dispositivos que puedan estar en la red.';
+
+
+-- -----------------------------------------------------
+-- Table Capture_has_Device
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS netby.Capture_has_Device (
+  Capture_ID_C INT NOT NULL,
+  Capture_User_ID_U INT NOT NULL,
+  Device_ID_D INT NOT NULL,
+  OSI_layer VARCHAR(45) NOT NULL COMMENT 'Indicar en que capa del modelo OSI se ubica.',
+  protocol VARCHAR(45) NOT NULL COMMENT 'Nombre de los  protocolos que se esten registrando.',
+  shared VARCHAR(100) NULL COMMENT 'Correo de la persona que compartió la capura. Si esta captura no es compartida, el campo estará vacio.',
+  PRIMARY KEY (Capture_ID_C, Capture_User_ID_U, Device_ID_D),
+  INDEX fk_Capture_has_Device_Device1_idx (Device_ID_D ASC) VISIBLE,
+  INDEX fk_Capture_has_Device_Capture1_idx (Capture_ID_C ASC, Capture_User_ID_U ASC) VISIBLE,
+  CONSTRAINT fk_Capture_has_Device_Capture1
+    FOREIGN KEY (Capture_ID_C , Capture_User_ID_U)
+    REFERENCES netby.Capture (ID_C , User_ID_U)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_Capture_has_Device_Device1
+    FOREIGN KEY (Device_ID_D)
+    REFERENCES netby.Device (ID_D)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+COMMENT = 'Tabla que relaciona las capturas con el dispositivo, ya que un dispositivo puede tener muchas capturas y viceversa.\n\nlos atributos estan dispuestos a cambios.';
+
