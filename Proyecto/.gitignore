@@ -1,3 +1,5 @@
 .vscode/
 .vs/
 node_modules/
+capture.pcap
+**/__pycache__

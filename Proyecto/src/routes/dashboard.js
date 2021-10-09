@@ -41,7 +41,7 @@ router.post('/dashboard/users/edit/:id', isLoggedIn, async (req, res) => {
 
 router.get('/dashboard/users/delete/:id', isLoggedIn, async (req, res) => {
     const { id } = req.params;
-    await pool.query('DELETE FROM user WHERE ID_U = ?', [id]);
+    await pool.query('DELETE FROM User WHERE ID_U = ?', [id]);
     req.flash('success', 'User deleted successfully');
     res.redirect('/dashboard/users');
 });
