@@ -2,4 +2,5 @@
 .vs/
 node_modules/
 capture.pcap
+capture.json
 **/__pycache__
