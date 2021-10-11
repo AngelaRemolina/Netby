@@ -55,7 +55,8 @@ router.post('/dashboard/users/add', isLoggedIn, async (req, res) => {
     const newUser = {
         name,
         email,
-        password
+        password,
+        role
     };
     await pool.query('INSERT INTO user set ?', [newUser]);
     // todo: add role to table user_type

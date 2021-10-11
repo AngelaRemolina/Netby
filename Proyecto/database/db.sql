@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS user (
   name VARCHAR(45) NOT NULL COMMENT 'Nombre Completo del Usurio ',
   email VARCHAR(100) NOT NULL COMMENT 'Correo electronico del ususario con el que desea ingresar a el sistema',
   password VARCHAR(60) NOT NULL COMMENT 'Contraseña de ingreso del usuario, el cual tiene que se mayor a 8 caracteres.',
-  role INT NOT NULL COMMENT 'Especificacion del Tipo de Persona que es el ususario.\n\nEjemplo: El usuario 1 es tipo administrador',
+  role INT NOT NULL COMMENT 'Especificacion del Tipo de Persona que es el ususario. Ejemplo: El usuario 0 es tipo admin y 1 es tipo cliente',
   PRIMARY KEY (ID_U))
 COMMENT = 'Tabla en la que se almacena la información de registro de las personas';
 

@@ -3,30 +3,27 @@
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Users</h6>
+        </div>
+        <div class="card-body">
             <div class="row justify-content-center">
                 <button type="button" class="btn btn-outline-primary">
                     <a href="/dashboard/users/add/"> ADD</a>
                 </button>
             </div>
-        </div>
-        <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr id="table-header" class="">
-                            <th>Role</th>
                             <th data-priority="1">ID</th>
                             <th data-priority="2">FULL NAME</th>
                             <th data-priority="3">EMAIL</th>
-                            <th data-priority="4">ACTIONS</th>
+                            <th data-priority="4">ROLE</th>
+                            <th data-priority="5">ACTIONS</th>
                         </tr>
                     </thead>
                     <tbody>
                         {{#each users}}
                         <tr>
-                            <td>
-                                <span class="{{role}}"></span>
-                            </td>
                             <td>
                                 {{ID_U}}
                             </td>
@@ -35,6 +32,10 @@
                             </td>
                             <td>
                                 {{email}}
+                            </td>
+                            <td>
+                                {{role}}
+                                {{!-- todo: display client or admin instead of 1 or 0 --}}
                             </td>
                             <td>
                                 <div class="header-tools">
