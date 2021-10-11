@@ -23,18 +23,14 @@ router.get('/dashboard/users/edit/:id', isLoggedIn, async (req, res) => {
 });
 
 router.post('/dashboard/users/edit/:id', isLoggedIn, async (req, res) => {
-    // TODO FIX THIS METHOD: not updating database
     const { id } = req.params;
-    const { name, email, user_role} = req.body;
+    const { name, email, role } = req.body;
     const editUser = {
         name,
-        email
-    };
-    const userRole = {
-        user_role
+        email,
+        role
     };
     await pool.query('UPDATE user set ? WHERE ID_U = ?', [editUser, id]);
-    // await pool.query('UPDATE user_type set ? WHERE ID_U = ?', [userRole, id]);
     req.flash('success', 'User updated successfully');
     res.redirect('/dashboard/users');
 });
@@ -78,9 +74,9 @@ router.post('/dashboard/captures', isLoggedIn, async (req, res) => {
         .then((response) => {
             return response.json();
         })
-    
+
     //TODO: STRUCTURE AND SAVE CAPTURE
-    
+
     //await pool.query('INSERT INTO captures set ?', [newUser]);
     //req.flash('success', 'Capture made succesfully!');
     //res.redirect('/dashboard/');
