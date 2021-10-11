@@ -12,13 +12,13 @@ router.get('/dashboard', isLoggedIn, async (req, res) => {
 //Dahsboard users
 
 router.get('/dashboard/users', isLoggedIn, async (req, res) => {
-    const users = await pool.query('SELECT * FROM User');// It send to the list and create an array with the users
+    const users = await pool.query('SELECT * FROM user');// It send to the list and create an array with the users
     res.render('dashboard/users/list', { users: users });
 });
 
 router.get('/dashboard/users/edit/:id', isLoggedIn, async (req, res) => {
     const { id } = req.params;
-    const users = await pool.query('SELECT * FROM User WHERE ID_U = ?', [id]);
+    const users = await pool.query('SELECT * FROM user WHERE ID_U = ?', [id]);
     res.render('./dashboard/users/edit', { user: users[0] });
 });
 
@@ -33,7 +33,7 @@ router.post('/dashboard/users/edit/:id', isLoggedIn, async (req, res) => {
     const userRole = {
         user_role
     };
-    await pool.query('UPDATE User set ? WHERE ID_U = ?', [editUser, id]);
+    await pool.query('UPDATE user set ? WHERE ID_U = ?', [editUser, id]);
     // await pool.query('UPDATE user_type set ? WHERE ID_U = ?', [userRole, id]);
     req.flash('success', 'User updated successfully');
     res.redirect('/dashboard/users');
@@ -41,7 +41,7 @@ router.post('/dashboard/users/edit/:id', isLoggedIn, async (req, res) => {
 
 router.get('/dashboard/users/delete/:id', isLoggedIn, async (req, res) => {
     const { id } = req.params;
-    await pool.query('DELETE FROM User WHERE ID_U = ?', [id]);
+    await pool.query('DELETE FROM user WHERE ID_U = ?', [id]);
     req.flash('success', 'User deleted successfully');
     res.redirect('/dashboard/users');
 });
@@ -51,16 +51,14 @@ router.get('/dashboard/users/add', isLoggedIn, (req, res) => {
 });
 
 router.post('/dashboard/users/add', isLoggedIn, async (req, res) => {
-    const { name, username, email, role, status, password } = req.body;
+    const { name, email, role, password } = req.body;
     const newUser = {
         name,
-        username,
         email,
-        role,
-        status,
         password
     };
-    await pool.query('INSERT INTO User set ?', [newUser]);
+    await pool.query('INSERT INTO user set ?', [newUser]);
+    // todo: add role to table user_type
     req.flash('success', 'User saved successfully');
     res.redirect('/dashboard/users');
 });
