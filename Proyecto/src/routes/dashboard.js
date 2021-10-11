@@ -70,11 +70,24 @@ router.get('/dashboard/captures/add', isLoggedIn, (req, res) => {
 });
 
 router.post('/dashboard/captures', isLoggedIn, async (req, res) => {
+    // execute sniffer python file to generate json
+    const {spawn} = require('child_process');
+    const childPython = spawn('python3',['../../packet_sniffer/sniffer.py']);
+    childPython.stdout.on('data',(data)=>{
+        console.log(`stdout: ${data}`);
+    });
+    childPython.stderr.on('data',(data)=>{
+        console.log(`stderr: ${data}`);
+    });
+    childPython.on('close',(code)=>{
+        console.log(`Child process exited with code: ${code}`);
+    });
 
-    fetch('http://127.0.0.1:5000/sniff')
-        .then((response) => {
-            return response.json();
-        })
+    // wait for file to be generated
+    // todo: sleep
+
+    // read json file
+    // todo: read json
 
     //TODO: STRUCTURE AND SAVE CAPTURE
 
