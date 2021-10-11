@@ -37,6 +37,8 @@ router.post('/dashboard/users/edit/:id', isLoggedIn, async (req, res) => {
 
 router.get('/dashboard/users/delete/:id', isLoggedIn, async (req, res) => {
     const { id } = req.params;
+    // todo: check that the user can't delete his own profile
+    // if(id == id_logeado): print("you can't delete yourself!")else: continue
     await pool.query('DELETE FROM user WHERE ID_U = ?', [id]);
     req.flash('success', 'User deleted successfully');
     res.redirect('/dashboard/users');
@@ -55,7 +57,6 @@ router.post('/dashboard/users/add', isLoggedIn, async (req, res) => {
         role
     };
     await pool.query('INSERT INTO user set ?', [newUser]);
-    // todo: add role to table user_type
     req.flash('success', 'User saved successfully');
     res.redirect('/dashboard/users');
 });
@@ -64,7 +65,7 @@ router.post('/dashboard/users/add', isLoggedIn, async (req, res) => {
 // Make a net capture (sniff)
 
 router.get('/dashboard/captures/add', isLoggedIn, (req, res) => {
-    // TO DO: VIEW OF CAPTURES IN DASHBOARD
+    // TODO: VIEW OF CAPTURES IN DASHBOARD
     // res.render('dashboard/captures/add');
 });
 
