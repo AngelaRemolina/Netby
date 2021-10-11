@@ -9,15 +9,15 @@ passport.use('local.signin', new LocalStrategy({
     passwordField: 'password',
     passReqToCallback: true
 }, async (req, email, password, done) => {
-    const rows = await pool.query('SELECT * FROM User WHERE email = ?', [email]);
+    const rows = await pool.query('SELECT * FROM user WHERE email = ?', [email]);
     if (rows.length > 0) {
         const user = rows[0];
         const validPassword = await helpers.matchPassword(password, user.password)
         console.log(validPassword);
         if (validPassword) {
-            if(user.name == null){
+            if (user.name == null) {
                 done(null, user, req.flash('success', 'Welcome!'));
-            } else{
+            } else {
                 done(null, user, req.flash('success', 'Welcome ' + user.name));
             }
         } else {
@@ -38,14 +38,13 @@ passport.use('local.signup', new LocalStrategy({
     let newUser = {
         email,
         password,
-        name
+        name,
+        role: 1 //the user is created as a client by default, need permission from an admin, to become one.
     };
     newUser.password = await helpers.encryptPassword(password);
     // Saving in the Database
-    const result = await pool.query('INSERT INTO User SET ? ', newUser);
+    const result = await pool.query('INSERT INTO user SET ? ', newUser);
     newUser.ID_U = result.insertId;
-    // asign default role 0 (client)
-    //await pool.query('INSERT INTO user_type (User_ID_U,user_role) VALUES ?', (newUser.ID_U,0));
     return done(null, newUser);
 }));
 
@@ -54,6 +53,6 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser(async (id, done) => {
-    const rows = await pool.query('SELECT * FROM User WHERE ID_U = ?', [id]);
+    const rows = await pool.query('SELECT * FROM user WHERE ID_U = ?', [id]);
     done(null, rows[0]);
 });

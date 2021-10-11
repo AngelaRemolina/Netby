@@ -1,44 +1,29 @@
-<div class="container justify-content-center">
-    <div class="row justify-content-center">
-        <li>
-            <button type="button" class="btn btn-outline-primary">
-                <a href="/dashboard/users/add/"> ADD</a>
-            </button>
-        </li>
-    </div>
-</div>
 <div class="container-fluid">
-
-    <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Tables</h1>
-    <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
-        For more information about DataTables, please visit the <a target="_blank"
-            href="https://datatables.net">official DataTables documentation</a>.</p>
-
     <!-- DataTale -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Users</h6>
         </div>
         <div class="card-body">
+            <div class="row justify-content-center">
+                <button type="button" class="btn btn-outline-primary">
+                    <a href="/dashboard/users/add/"> ADD</a>
+                </button>
+            </div>
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
-
                         <tr id="table-header" class="">
-                            <th>STATUS</th>
                             <th data-priority="1">ID</th>
                             <th data-priority="2">FULL NAME</th>
                             <th data-priority="3">EMAIL</th>
-                            <th data-priority="4">ACTIONS</th>
+                            <th data-priority="4">ROLE</th>
+                            <th data-priority="5">ACTIONS</th>
                         </tr>
                     </thead>
                     <tbody>
                         {{#each users}}
                         <tr>
-                            <td>
-                                <span class="{{status}}"></span>
-                            </td>
                             <td>
                                 {{ID_U}}
                             </td>
@@ -49,6 +34,10 @@
                                 {{email}}
                             </td>
                             <td>
+                                {{role}}
+                                {{!-- todo: display client or admin instead of 1 or 0 --}}
+                            </td>
+                            <td>
                                 <div class="header-tools">
                                     <div class="tools">
                                         <button data-bs-toggle="modal" data-bs-target="#">
@@ -56,7 +45,8 @@
                                         </button>
 
                                         <button>
-                                            <a class="material-icons " href="/dashboard/users/delete/{{ID_U}}">delete</a>
+                                            <a class="material-icons "
+                                                href="/dashboard/users/delete/{{ID_U}}">delete</a>
                                         </button>
                                     </div>
                                 </div>

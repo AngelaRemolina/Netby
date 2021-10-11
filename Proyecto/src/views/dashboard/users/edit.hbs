@@ -3,7 +3,7 @@
         <div class="col-md-4 mx-auto">
             <div class="card">
                 <div class="card-body">
-                    <form action="/dashboard/users/edit/{{user.id}}" method="POST">
+                    <form action="/dashboard/users/edit/{{user.ID_U}}" method="POST">
                         <div class="form-group">
                             <input type="text" value="{{user.name}}" class="form-control" name="name"
                                 placeholder="Full Name" autofocus>
@@ -13,8 +13,12 @@
                                 aria-describedby="emailHelp" placeholder="Email">
                         </div>
                         <div class="form-group">
-                            <input type="text" value="{{user.user_role}}" class="form-control" name="role"
-                                placeholder="Role" >
+                            <label for="role">Role</label>
+                            <select name="role" id="role" value="{{user.role}}">
+                                <option value="0">Administrator</option>
+                                <option value="1">Client</option>
+                            </select>
+                            </br>
                         </div>
                         <div class="form-group">
                             <button class="btn btn-success btn-block">
