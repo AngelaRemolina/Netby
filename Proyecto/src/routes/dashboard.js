@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const pool = require('../database');
+const helpers = require('../lib/helpers');
 const { isLoggedIn, isNotLoggedIn } = require('../lib/auth');
 
 //Only Dahsboard
@@ -59,6 +60,7 @@ router.post('/dashboard/users/add', isLoggedIn, async (req, res) => {
         password,
         role
     };
+    newUser.password = await helpers.encryptPassword(password);
     await pool.query('INSERT INTO user set ?', [newUser]);
     req.flash('success', 'User saved successfully');
     res.redirect('/dashboard/users');

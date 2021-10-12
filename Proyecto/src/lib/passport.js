@@ -42,10 +42,17 @@ passport.use('local.signup', new LocalStrategy({
         role: 1 //the user is created as a client by default, need permission from an admin, to become one.
     };
     newUser.password = await helpers.encryptPassword(password);
-    // Saving in the Database
-    const result = await pool.query('INSERT INTO user SET ? ', newUser);
-    newUser.ID_U = result.insertId;
-    return done(null, newUser);
+
+    const rows = await pool.query('SELECT * FROM user WHERE email = ?', [newUser.email]);
+    if (rows.length == 0) { //if email is unique
+        // Saving in the Database
+        const result = await pool.query('INSERT INTO user SET ? ', newUser);
+        newUser.ID_U = result.insertId;
+        return done(null, newUser);
+    } else {
+        
+        return done(null, false, req.flash('message',"This email has an account registered."));
+    }
 }));
 
 passport.serializeUser((user, done) => {

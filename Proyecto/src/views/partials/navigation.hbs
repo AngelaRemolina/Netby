@@ -6,13 +6,16 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
         {{#if user}}
-        {{#ifCond user.role 'client'}}
-
+        <li class="nav-item">
+          <a class="nav-link" href="/dashboard">Captures</a>
+        </li>
+        {{#ifCond user.role 1}}
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
             aria-expanded="false">
             Links
           </a>
+          {{!-- TODO: This drop down is to delete. Leave it as an exaple --}}
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
             <li><a class="dropdown-item" href="/links">All Links</a></li>
             <li>
@@ -21,15 +24,9 @@
             <li><a class="dropdown-item" href="/links/add">Add a link</a></li>
           </ul>
         </li>
-        <li class="nav-item">
-          <a href="/content" class="nav-link">My Content</a>
-        </li>
-        <li class="nav-item">
-          <a href="/payments" class="nav-link">Payments</a>
-        </li>
         {{/ifCond}}
 
-        {{#ifCond user.role 'admin'}}
+        {{#ifCond user.role 0}}
         <li class="nav-item">
           <a class="nav-link" href="/dashboard/users">Users</a>
         </li>
