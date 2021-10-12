@@ -38,10 +38,10 @@ router.post('/dashboard/users/edit/:id', isLoggedIn, async (req, res) => {
 
 router.get('/dashboard/users/delete/:id', isLoggedIn, async (req, res) => {
     const { id } = req.params;
-    if (id == req.user.ID_U){
-        req.flash('message',"You can't delete yourself!");
+    if (id == req.user.ID_U) {
+        req.flash('message', "You can't delete yourself!");
         res.redirect('/dashboard/users');
-    }else{
+    } else {
         await pool.query('DELETE FROM user WHERE ID_U = ?', [id]);
         req.flash('success', 'User deleted successfully');
         res.redirect('/dashboard/users');
@@ -69,24 +69,33 @@ router.post('/dashboard/users/add', isLoggedIn, async (req, res) => {
 
 // Make a net capture (sniff)
 
-router.get('/dashboard/captures/add', isLoggedIn, (req, res) => {
-    // TODO: VIEW OF CAPTURES IN DASHBOARD
-    // res.render('dashboard/captures/add');
+router.get('/dashboard/captures', isLoggedIn, (req, res) => {
+    // TODO: VIEW OF CAPTURES IN DASHBOARD 
+
+    // res.render('dashboard/captures/list');
 });
 
-router.post('/dashboard/captures', isLoggedIn, async (req, res) => {
+router.get('/dashboard/captures/add', isLoggedIn, (req, res) => {
+    // TODO: VIEW OF CAPTURES IN DASHBOARD 
+
+    res.render('dashboard/captures/');
+});
+
+router.post('/dashboard/captures/add', isLoggedIn, async (req, res) => {
     // execute sniffer python file to generate json
-    const {spawn} = require('child_process');
-    const childPython = spawn('python3',['../../packet_sniffer/sniffer.py']);
-    childPython.stdout.on('data',(data)=>{
+    const { spawn } = require('child_process');
+    const childPython = spawn('python3', ['./packet_sniffer/sniffer.py']);
+    childPython.stdout.on('data', (data) => {
         console.log(`stdout: ${data}`);
     });
-    childPython.stderr.on('data',(data)=>{
+    childPython.stderr.on('data', (data) => {
         console.log(`stderr: ${data}`);
     });
-    childPython.on('close',(code)=>{
+    childPython.on('close', (code) => {
         console.log(`Child process exited with code: ${code}`);
     });
+    req.flash('success', 'Capture generated');
+
 
     // wait for file to be generated
     // todo: sleep

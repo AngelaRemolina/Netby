@@ -131,4 +131,4 @@ def format_multi_line(prefix, string, size=80):
     return '\n'.join([prefix + line for line in textwrap.wrap(string, size)])
 
 
-main(30) #capture during one minute
+main(30) #capture during 30 seconds
