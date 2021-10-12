@@ -37,8 +37,6 @@ router.post('/dashboard/users/edit/:id', isLoggedIn, async (req, res) => {
 
 router.get('/dashboard/users/delete/:id', isLoggedIn, async (req, res) => {
     const { id } = req.params;
-    // todo: check that the user can't delete his own profile
-    // if(id == id_logeado): print("you can't delete yourself!")else: continue
     if (id == req.user.ID_U){
         req.flash('message',"You can't delete yourself!");
         res.redirect('/dashboard/users');
