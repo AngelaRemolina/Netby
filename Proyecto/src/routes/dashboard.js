@@ -39,9 +39,14 @@ router.get('/dashboard/users/delete/:id', isLoggedIn, async (req, res) => {
     const { id } = req.params;
     // todo: check that the user can't delete his own profile
     // if(id == id_logeado): print("you can't delete yourself!")else: continue
-    await pool.query('DELETE FROM user WHERE ID_U = ?', [id]);
-    req.flash('success', 'User deleted successfully');
-    res.redirect('/dashboard/users');
+    if (id == req.user.ID_U){
+        req.flash('message',"You can't delete yourself!");
+        res.redirect('/dashboard/users');
+    }else{
+        await pool.query('DELETE FROM user WHERE ID_U = ?', [id]);
+        req.flash('success', 'User deleted successfully');
+        res.redirect('/dashboard/users');
+    }
 });
 
 router.get('/dashboard/users/add', isLoggedIn, (req, res) => {
