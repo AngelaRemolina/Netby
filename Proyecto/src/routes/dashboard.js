@@ -43,11 +43,18 @@ router.get('/dashboard/capture', isLoggedIn, async (req, res) => {
 });
 
 router.post('/dashboard/capture', isLoggedIn, async (req, res) => {
+    var end, start;
+
     // execute sniffer python file to generate json
     const { spawn } = require('child_process');
-    const childPython = spawn('python3', ['./packet_sniffer/sniffer.py']);
+    start = new Date();
+    console.log("INICIOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
+    console.log(start);
+    const childPython = await spawn('python3', ['./packet_sniffer/sniffer.py']);
+
 
     // wait for file to be generated
+    //show load bar while waiting
     req.flash('sleeptime', 'Capturing network...');
 
     // show output in console and alert success or failure
@@ -61,20 +68,85 @@ router.post('/dashboard/capture', isLoggedIn, async (req, res) => {
     childPython.on('close', (code) => {
         console.log(`Child process exited with code: ${code}`);
         req.flash('success', 'Capture generated');
+
+
     });
 
-    // read json file
-    fs.readFile('./capture.json', 'utf8', function (err, data) {
-        if (err) throw err;
+    end = new Date();
+
+    console.log("FINNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN")
+    console.log(end);
+    // await pool.query(`INSERT INTO capture (user_ID_U, start_time, end_time) VALUES (${req.user.ID_U},"${start.toJSON()}","${end.toJSON()}")`);
+
+    /*// TODO: wait for file to be generated
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+    
+    await sleep(35);
+    */
+
+
+    fs.readFile('./capture.json', 'utf8', async function (err, data) {
+        if (err) {
+
+            req.flash('message', 'An error ocurred during the capture.');
+        };
         var captures = JSON.parse(data); // array with captures
         for (let i = 0; i < captures.length; i++) {
+            // initialize variables
+            var mac_dest = null;
+            var mac_source = null;
+            var proto = null;
+            var ipv4_sorce = null;
+            var ipv4_target = null;
+            var icmp_packet = null;
+            var icmp_data = null;
+            var tcp_segment = null;
+            var tcp_flags = null;
+            var tcp_data = null;
+            var http_data = null;
+            var udp_segment = null;
+            var other_ipv4_data = null;
+            var ethernet_data = null;
+
             var frame = captures[i];
             //TODO: STRUCTURE AND SAVE CAPTURE
-            console.log(Object.values(frame)[0]);
+            var dest_src_proto = String(Object.values(frame)[0].Description).split(",");
+            var mac_dest = dest_src_proto[0].substring(13, dest_src_proto[0].length)
+            var mac_source = dest_src_proto[1].substring(9, dest_src_proto[1].length)
+            var proto = dest_src_proto[2].substring(11, dest_src_proto[2].length)
+
+            var dest_src_proto = String(Object.values(frame)[0].IPv4_Packet).split(",");
+            console.log(mac_dest);
+            console.log(mac_source);
+            console.log(proto);
+            const newCapture = {
+                user_ID_U: req.user.ID_U,
+                start_time: start.toJSON(),
+                end_time: end.toJSON(),
+                mac_dest: mac_dest,
+                mac_source: mac_source,
+                proto: proto/*,
+                    ipv4_sorce : ipv4_sorce,
+                    ipv4_target : ipv4_target,
+                    icmp_packet : icmp_packet,
+                    icmp_data : icmp_data,
+                    tcp_segment : tcp_segment,
+                    tcp_flags : tcp_flags,
+                    tcp_data : tcp_data,
+                    http_data : http_data,
+                    udp_segment : udp_segment,
+                    other_ipv4_data : other_ipv4_data,
+                    ethernet_data : ethernet_data*/
+            };
+
+            await pool.query('INSERT INTO capture set ?', [newCapture]);
+
         }
     });
 
-    //await pool.query('INSERT INTO captures set ?', [newUser]);
+
     //req.flash('success', 'Capture made succesfully!');
     res.redirect('/dashboard/dashboard');
 });

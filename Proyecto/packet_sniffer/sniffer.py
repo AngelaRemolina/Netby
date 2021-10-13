@@ -44,20 +44,20 @@ def main(capture_timeout):
         if eth.proto == 8:
             ipv4 = IPv4(eth.data)
 
-            inner_dict['IPv4 Packet'] = f'Version: {ipv4.version}, Header Length: {ipv4.header_length}, TTL: { ipv4.ttl}, Protocol: {ipv4.proto}, Source: {ipv4.src}, Target: {ipv4.target}'
+            inner_dict['IPv4_Packet'] = f'Version: {ipv4.version}, Header Length: {ipv4.header_length}, TTL: { ipv4.ttl}, Protocol: {ipv4.proto}, Source: {ipv4.src}, Target: {ipv4.target}'
 
             # ICMP
             if ipv4.proto == 1:
                 icmp = ICMP(ipv4.data)
 
-                inner_dict['ICMP Packet'] = f'Type: {icmp.type}, Code: {icmp.code}, Checksum: {icmp.checksum}'
-                inner_dict['ICMP Data'] = format_multi_line(icmp.data)
+                inner_dict['ICMP_Packet'] = f'Type: {icmp.type}, Code: {icmp.code}, Checksum: {icmp.checksum}'
+                inner_dict['ICMP_Data'] = format_multi_line(icmp.data)
 
             # TCP
             elif ipv4.proto == 6:
                 tcp = TCP(ipv4.data)
-                inner_dict['TCP Segment'] = f'Source Port: {tcp.src_port}, Destination Port: {tcp.dest_port}, Sequence: {tcp.sequence}, Acknowledgment: {tcp.acknowledgment}'
-                inner_dict['TCP flags'] = f'URG: {tcp.flag_urg}, ACK: {tcp.flag_ack}, PSH: {tcp.flag_psh}, RST: {tcp.flag_rst}, SYN: {tcp.flag_syn}, FIN:{tcp.flag_fin}'
+                inner_dict['TCP_Segment'] = f'Source Port: {tcp.src_port}, Destination Port: {tcp.dest_port}, Sequence: {tcp.sequence}, Acknowledgment: {tcp.acknowledgment}'
+                inner_dict['TCP_flags'] = f'URG: {tcp.flag_urg}, ACK: {tcp.flag_ack}, PSH: {tcp.flag_psh}, RST: {tcp.flag_rst}, SYN: {tcp.flag_syn}, FIN:{tcp.flag_fin}'
 
                 if len(tcp.data) > 0:
 
@@ -69,23 +69,23 @@ def main(capture_timeout):
                             http_data = ''
                             for line in http_info:
                                 http_data += str(line)+","
-                            inner_dict['HTTP Data'] = http_info
+                            inner_dict['HTTP_Data'] = http_info
                         except:
-                            inner_dict['HTTP Data'] = format_multi_line(DATA_TAB_3, tcp.data)
+                            inner_dict['HTTP_Data'] = format_multi_line(DATA_TAB_3, tcp.data)
                     else:
-                        inner_dict['TCP Data'] = format_multi_line(DATA_TAB_3, tcp.data)
+                        inner_dict['TCP_Data'] = format_multi_line(DATA_TAB_3, tcp.data)
 
             # UDP
             elif ipv4.proto == 17:
                 udp = UDP(ipv4.data)
-                inner_dict['UDP Segment'] = f'Source Port: {udp.src_port}, Destination Port: {udp.dest_port}, Length: {udp.size}'
+                inner_dict['UDP_Segment'] = f'Source Port: {udp.src_port}, Destination Port: {udp.dest_port}, Length: {udp.size}'
 
             # Other IPv4
             else:
-                inner_dict['Other IPv4 Data'] = format_multi_line(DATA_TAB_2, ipv4.data)
+                inner_dict['Other_IPv4_Data'] = format_multi_line(DATA_TAB_2, ipv4.data)
 
         else:
-            inner_dict['Ethernet Data'] = format_multi_line(DATA_TAB_1, eth.data)
+            inner_dict['Ethernet_Data'] = format_multi_line(DATA_TAB_1, eth.data)
         
         capture.append({f'Ethernet Frame {cont}':inner_dict})
 
