@@ -4,6 +4,7 @@ const router = express.Router();
 const pool = require('../database');
 const helpers = require('../lib/helpers');
 const { isLoggedIn, isNotLoggedIn } = require('../lib/auth');
+var fs = require('fs');
 
 //Only Dahsboard
 router.get('/dashboard', isLoggedIn, async (req, res) => {
@@ -48,7 +49,7 @@ router.post('/dashboard/capture', isLoggedIn, async (req, res) => {
 
     // wait for file to be generated
     req.flash('sleeptime', 'Capturing network...');
-    
+
     // show output in console and alert success or failure
     childPython.stdout.on('data', (data) => {
         console.log(`stdout: ${data}`);
@@ -63,9 +64,15 @@ router.post('/dashboard/capture', isLoggedIn, async (req, res) => {
     });
 
     // read json file
-    // todo: read json
-
-    //TODO: STRUCTURE AND SAVE CAPTURE
+    fs.readFile('./capture.json', 'utf8', function (err, data) {
+        if (err) throw err;
+        var captures = JSON.parse(data); // array with captures
+        for (let i = 0; i < captures.length; i++) {
+            var frame = captures[i];
+            //TODO: STRUCTURE AND SAVE CAPTURE
+            console.log(Object.values(frame)[0]);
+        }
+    });
 
     //await pool.query('INSERT INTO captures set ?', [newUser]);
     //req.flash('success', 'Capture made succesfully!');
