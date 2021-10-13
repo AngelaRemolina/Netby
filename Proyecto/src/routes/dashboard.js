@@ -7,10 +7,75 @@ const { isLoggedIn, isNotLoggedIn } = require('../lib/auth');
 
 //Only Dahsboard
 router.get('/dashboard', isLoggedIn, async (req, res) => {
+    // TODO: VIEW OF CAPTURES IN DASHBOARD 
+    // something like SELECT * FROM captures, capture_has_device, device
+    // res.render('dashboard/captures/list');
     res.render('dashboard/dashboard');
 });
 
-//Dahsboard users
+
+// Dashboard / captures
+
+router.get('/dashboard/edit/:id', isLoggedIn, async (req, res) => {
+    const { id } = req.params;
+    // TODO: get edit capture
+    // select to show
+});
+
+router.post('/dashboard/edit/:id', isLoggedIn, async (req, res) => {
+    // TODO: post edit capture
+    // update to edit
+});
+
+router.get('/dashboard/delete/:id', isLoggedIn, async (req, res) => {
+    const { id } = req.params;
+
+    // TODO: delete capture 
+
+});
+
+router.get('/dashboard/capture', isLoggedIn, async (req, res) => {
+    // TODO: VIEW OF CAPTURES IN DASHBOARD 
+    // something like SELECT * FROM captures, capture_has_device, device
+    // res.render('dashboard/captures/list');
+    res.render('dashboard/dashboard');
+});
+
+router.post('/dashboard/capture', isLoggedIn, async (req, res) => {
+    // execute sniffer python file to generate json
+    const { spawn } = require('child_process');
+    const childPython = spawn('python3', ['./packet_sniffer/sniffer.py']);
+
+    // wait for file to be generated
+    req.flash('sleeptime', 'Capturing network...');
+    
+    // show output in console and alert success or failure
+    childPython.stdout.on('data', (data) => {
+        console.log(`stdout: ${data}`);
+    });
+    childPython.stderr.on('data', (data) => {
+        console.log(`stderr: ${data}`);
+        req.flash('message', 'An error ocurred during the capture.');
+    });
+    childPython.on('close', (code) => {
+        console.log(`Child process exited with code: ${code}`);
+        req.flash('success', 'Capture generated');
+    });
+
+
+    // read json file
+    // todo: read json
+
+    //TODO: STRUCTURE AND SAVE CAPTURE
+
+    //await pool.query('INSERT INTO captures set ?', [newUser]);
+    //req.flash('success', 'Capture made succesfully!');
+    res.redirect('/dashboard/dashboard');
+});
+
+
+
+//Dahsboard / users
 
 router.get('/dashboard/users', isLoggedIn, async (req, res) => {
     const users = await pool.query('SELECT * FROM user');// It send to the list and create an array with the users
@@ -65,51 +130,6 @@ router.post('/dashboard/users/add', isLoggedIn, async (req, res) => {
     req.flash('success', 'User saved successfully');
     res.redirect('/dashboard/users');
 });
-
-
-// Make a net capture (sniff)
-
-router.get('/dashboard/captures', isLoggedIn, (req, res) => {
-    // TODO: VIEW OF CAPTURES IN DASHBOARD 
-
-    // res.render('dashboard/captures/list');
-});
-
-router.get('/dashboard/captures/add', isLoggedIn, (req, res) => {
-    // TODO: VIEW OF CAPTURES IN DASHBOARD 
-
-    res.render('dashboard/captures/');
-});
-
-router.post('/dashboard/captures/add', isLoggedIn, async (req, res) => {
-    // execute sniffer python file to generate json
-    const { spawn } = require('child_process');
-    const childPython = spawn('python3', ['./packet_sniffer/sniffer.py']);
-    childPython.stdout.on('data', (data) => {
-        console.log(`stdout: ${data}`);
-    });
-    childPython.stderr.on('data', (data) => {
-        console.log(`stderr: ${data}`);
-    });
-    childPython.on('close', (code) => {
-        console.log(`Child process exited with code: ${code}`);
-    });
-    req.flash('success', 'Capture generated');
-
-
-    // wait for file to be generated
-    // todo: sleep
-
-    // read json file
-    // todo: read json
-
-    //TODO: STRUCTURE AND SAVE CAPTURE
-
-    //await pool.query('INSERT INTO captures set ?', [newUser]);
-    //req.flash('success', 'Capture made succesfully!');
-    //res.redirect('/dashboard/');
-});
-
 
 
 module.exports = router;
