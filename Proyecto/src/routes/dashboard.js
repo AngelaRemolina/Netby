@@ -62,7 +62,6 @@ router.post('/dashboard/capture', isLoggedIn, async (req, res) => {
         req.flash('success', 'Capture generated');
     });
 
-
     // read json file
     // todo: read json
 
