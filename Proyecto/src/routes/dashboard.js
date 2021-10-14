@@ -10,10 +10,8 @@ var fs = require('fs');
 router.get('/dashboard', isLoggedIn, async (req, res) => {
     // TODO: VIEW OF CAPTURES IN DASHBOARD 
     // something like SELECT * FROM captures, capture_has_device, device
-    // res.render('dashboard/captures/list');
-    res.render('dashboard/dashboard');
+    res.render('dashboard/captures/dashboard');
 });
-
 
 // Dashboard / captures
 
@@ -21,28 +19,24 @@ router.get('/dashboard/edit/:id', isLoggedIn, async (req, res) => {
     const { id } = req.params;
     // TODO: get edit capture
     // select to show
+    res.render('dashboard/captures/edit');
 });
 
 router.post('/dashboard/edit/:id', isLoggedIn, async (req, res) => {
     // TODO: post edit capture
     // update to edit
+    res.redirect('dashboard/captures/dashboard');
 });
 
 router.get('/dashboard/delete/:id', isLoggedIn, async (req, res) => {
     const { id } = req.params;
 
     // TODO: delete capture 
-
+    res.redirect('dashboard/captures/dashboard');
 });
 
 router.get('/dashboard/capture', isLoggedIn, async (req, res) => {
-    // TODO: VIEW OF CAPTURES IN DASHBOARD 
-    // something like SELECT * FROM captures, capture_has_device, device
-    // res.render('dashboard/captures/list');
-    res.render('dashboard/dashboard');
-});
-
-router.post('/dashboard/capture', isLoggedIn, async (req, res) => {
+    req.flash('Success', 'BIEEEEEEEEEEEEEEEEEEEEEEN')
     var end, start;
 
     // execute sniffer python file to generate json
@@ -179,7 +173,7 @@ router.post('/dashboard/capture', isLoggedIn, async (req, res) => {
 
 
     //req.flash('success', 'Capture made succesfully!');
-    res.redirect('/dashboard/dashboard');
+    res.redirect('/dashboard');
 });
 
 
