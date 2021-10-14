@@ -11,7 +11,7 @@ router.get('/dashboard', isLoggedIn, async (req, res) => {
     // TODO: VIEW OF CAPTURES IN DASHBOARD 
     const { id } = req.params;
     const captures = await pool.query('SELECT * FROM capture WHERE user_ID_U = ?', [id]);
-    res.render('dashboard/captures/dashboard', {captures, myuser});
+    res.render('dashboard/captures/dashboard', {captures});
 });
 
 // Dashboard / captures
