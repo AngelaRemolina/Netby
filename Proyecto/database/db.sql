@@ -68,3 +68,5 @@ CREATE TABLE IF NOT EXISTS frame (
 SET FOREIGN_KEY_CHECKS = 1;
 
 SET @@global.sql_mode= '';
+
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';
