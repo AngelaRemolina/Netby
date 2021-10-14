@@ -35,6 +35,9 @@
             <div class="alert fade show" role="alert">
                 {{sleeptime}}
                 <progress max="30000" min="0" value="0"></progress>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
                 <script>
                     function redraw() {
                         var p = document.querySelector("progress");

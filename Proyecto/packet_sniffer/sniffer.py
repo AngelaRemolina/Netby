@@ -2,6 +2,7 @@ import socket
 import textwrap
 import time
 import json
+from datetime import datetime
 from networking.ethernet import Ethernet
 from networking.ipv4 import IPv4
 from networking.icmp import ICMP
@@ -22,6 +23,7 @@ DATA_TAB_4 = '\t\t\t\t   '
 
 
 def main(capture_timeout):
+    start_time = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
     capture = []
     pcap = Pcap('capture.pcap')
     conn = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.ntohs(3))
@@ -89,6 +91,8 @@ def main(capture_timeout):
         
         capture.append({f'Ethernet Frame {cont}':inner_dict})
 
+    end_time = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
+    capture.insert(0,{'times':[start_time, end_time]})
     with open('capture.json', 'w') as outfile:
         json.dump(capture, outfile)
 
