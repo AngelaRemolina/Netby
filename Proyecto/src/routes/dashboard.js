@@ -9,10 +9,17 @@ var fs = require('fs');
 //Only Dahsboard
 router.get('/dashboard', isLoggedIn, async (req, res) => {
     // TODO: VIEW OF CAPTURES IN DASHBOARD 
-    const { id } = req.params;
-    const captures = await pool.query('SELECT * FROM capture WHERE user_ID_U = ?', [id]);
-    res.render('dashboard/captures/dashboard', {captures});
-});
+    if (req.user.role === 0) {
+        // Admin view code
+        const captures = await pool.query('SELECT ID_C,email,start_time,end_time FROM user u, capture c WHERE c.user_id_u = u.id_u');
+        console.log(captures);
+        res.render('dashboard/captures/dashboard', {captures});
+    } else if (req.user.role === 1) {
+        // Client view code
+        const captures = await pool.query('SELECT * FROM capture WHERE user_ID_U = ?', [req.user.ID_U]);
+        res.render('dashboard/captures/dashboard', {captures: captures});
+    }
+}); 
 
 // Dashboard / captures
 
@@ -127,56 +134,56 @@ router.get('/dashboard/capture', isLoggedIn, async (req, res) => {
                 }
                 if (Object.keys(frame_dict).includes('ICMP_Packet')) {
                     icmp_packet = String(frame_dict.ICMP_Packet);
-                    if(icmp_packet.length > 100){
-                        icmp_packet = icmp_packet.substring(0,98);
+                    if (icmp_packet.length > 100) {
+                        icmp_packet = icmp_packet.substring(0, 98);
                     }
                 }
                 if (Object.keys(frame_dict).includes('ICMP_Data')) {
                     icmp_data = String(frame_dict.ICMP_Data);
-                    if(icmp_data.length > 200){
-                        icmp_data = icmp_data.substring(0,198);
+                    if (icmp_data.length > 200) {
+                        icmp_data = icmp_data.substring(0, 198);
                     }
                 }
                 if (Object.keys(frame_dict).includes('TCP_Segment')) {
                     tcp_segment = String(frame_dict.TCP_Segment);
-                    if(tcp_segment.length > 200){
-                        tcp_segment = tcp_segment.substring(0,198);
+                    if (tcp_segment.length > 200) {
+                        tcp_segment = tcp_segment.substring(0, 198);
                     }
                 }
                 if (Object.keys(frame_dict).includes('TCP_flags')) {
                     tcp_flags = String(frame_dict.tcp_flags);
-                    if(tcp_flags.length > 200){
-                        tcp_flags = tcp_flags.substring(0,198);
+                    if (tcp_flags.length > 200) {
+                        tcp_flags = tcp_flags.substring(0, 198);
                     }
                 }
                 if (Object.keys(frame_dict).includes('TCP_Data')) {
                     tcp_data = String(frame_dict.TCP_Data);
-                    if(tcp_data.length > 200){
-                        tcp_data = tcp_data.substring(0,198);
+                    if (tcp_data.length > 200) {
+                        tcp_data = tcp_data.substring(0, 198);
                     }
                 }
                 if (Object.keys(frame_dict).includes('HTTP_Data')) {
                     http_data = String(frame_dict.HTTP_Data);
-                    if(http_data.length > 200){
-                        http_data = http_data.substring(0,198);
+                    if (http_data.length > 200) {
+                        http_data = http_data.substring(0, 198);
                     }
                 }
                 if (Object.keys(frame_dict).includes('UDP_Segment')) {
                     udp_segment = String(frame_dict.UDP_Segment);
-                    if(udp_segment.length > 200){
-                        udp_segment = udp_segment.substring(0,198);
+                    if (udp_segment.length > 200) {
+                        udp_segment = udp_segment.substring(0, 198);
                     }
                 }
                 if (Object.keys(frame_dict).includes('Other_IPv4_Data')) {
                     other_ipv4_data = String(frame_dict.Other_IPv4_Data);
-                    if(other_ipv4_data.length > 200){
-                        other_ipv4_data = other_ipv4_data.substring(0,198);
+                    if (other_ipv4_data.length > 200) {
+                        other_ipv4_data = other_ipv4_data.substring(0, 198);
                     }
                 }
                 if (Object.keys(frame_dict).includes('Ethernet_Data')) {
                     ethernet_data = String(frame_dict.Ethernet_Data);
-                    if(ethernet_data.length > 200){
-                        ethernet_data = ethernet_data.substring(0,198);
+                    if (ethernet_data.length > 200) {
+                        ethernet_data = ethernet_data.substring(0, 198);
                     }
                 }
                 const newFrame = {

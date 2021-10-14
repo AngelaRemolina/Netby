@@ -97,30 +97,31 @@
                                         <div class="table-responsive">
                                             <table class="table table-bordered" id="dataTable" width="100%"
                                                 cellspacing="0">
+                                                
+                                                {{#ifCond user.role 0}}
                                                 <thead>
                                                     <tr id="table-header" class="">
-                                                        <th data-priority="1">Email</th>
-                                                        <th data-priority="2">IP Source</th>
+                                                        <th data-priority="1">ID Capture</th>
+                                                        <th data-priority="2">Email</th>
                                                         <th data-priority="3">Start time</th>
                                                         <th data-priority="4">End time</th>
                                                         <th data-priority="5">More details</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-
+                                                    {{#each captures}}
                                                     <tr>
                                                         <td>
-                                                            {{myuser.email}}
+                                                            {{ID_C}}
                                                         </td>
                                                         <td>
-                                                            {{captures.ipv4_sorce}}
+                                                            {{email}}
                                                         </td>
                                                         <td>
-                                                            {{captures.start_time}}
+                                                            {{start_time}}
                                                         </td>
                                                         <td>
-                                                            {{captures.end_time}}
-                                                            {{!-- todo: display client or admin instead of 1 or 0 --}}
+                                                            {{end_time}}
                                                         </td>
                                                         <td>
                                                             <div class="header-tools">
@@ -133,8 +134,44 @@
                                                             </div>
                                                         </td>
                                                     </tr>
-
+                                                    {{/each}}
                                                 </tbody>
+                                                {{/ifCond}}
+                                                {{#ifCond user.role 1}}
+                                                <thead>
+                                                    <tr id="table-header" class="">
+                                                        <th data-priority="1">ID Capture</th>
+                                                        <th data-priority="2">Start time</th>
+                                                        <th data-priority="3">End time</th>
+                                                        <th data-priority="4">More details</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {{#each captures}}
+                                                    <tr>
+                                                        <td>
+                                                            {{ID_C}}
+                                                        </td>
+                                                        <td>
+                                                            {{start_time}}
+                                                        </td>
+                                                        <td>
+                                                            {{end_time}}
+                                                        </td>
+                                                        <td>
+                                                            <div class="header-tools">
+                                                                <div class="tools">
+                                                                    <button>
+                                                                        <a data-toggle="modal"
+                                                                            data-target="#DetailsModal">></a>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    {{/each}}
+                                                </tbody>
+                                                {{/ifCond}}
                                             </table>
                                         </div>
                                         <canvas id="myAreaChart"></canvas>
