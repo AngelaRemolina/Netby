@@ -100,7 +100,7 @@
                                                 <thead>
                                                     <tr id="table-header" class="">
                                                         <th data-priority="1">Email</th>
-                                                        <th data-priority="2">Os</th>
+                                                        <th data-priority="2">IP Source</th>
                                                         <th data-priority="3">Start time</th>
                                                         <th data-priority="4">End time</th>
                                                         <th data-priority="5">More details</th>
@@ -110,16 +110,16 @@
 
                                                     <tr>
                                                         <td>
-                                                            {{user.email}}
+                                                            {{myuser.email}}
                                                         </td>
                                                         <td>
-                                                            {{name}}
+                                                            {{captures.ipv4_sorce}}
                                                         </td>
                                                         <td>
-                                                            {{e}}
+                                                            {{captures.start_time}}
                                                         </td>
                                                         <td>
-                                                            {{role}}
+                                                            {{captures.end_time}}
                                                             {{!-- todo: display client or admin instead of 1 or 0 --}}
                                                         </td>
                                                         <td>
@@ -163,7 +163,9 @@
                             <span aria-hidden="true">×</span>
                         </button>
                     </div>
-                    <div class="modal-body">{{!Aqui van los datos de la captura}}</div>
+                    <div class="modal-body">
+                        {{!Aqui van los datos de la captura}}
+                    </div>
                     <div class="modal-footer">
                         <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
                     </div>

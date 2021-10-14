@@ -9,8 +9,9 @@ var fs = require('fs');
 //Only Dahsboard
 router.get('/dashboard', isLoggedIn, async (req, res) => {
     // TODO: VIEW OF CAPTURES IN DASHBOARD 
-    // something like SELECT * FROM captures, capture_has_device, device
-    res.render('dashboard/captures/dashboard');
+    const { id } = req.params;
+    const captures = await pool.query('SELECT * FROM capture WHERE user_ID_U = ?', [id]);
+    res.render('dashboard/captures/dashboard', {captures, myuser});
 });
 
 // Dashboard / captures
@@ -171,12 +172,9 @@ router.get('/dashboard/capture', isLoggedIn, async (req, res) => {
         }
     });
 
-
     //req.flash('success', 'Capture made succesfully!');
     res.redirect('/dashboard');
 });
-
-
 
 //Dahsboard / users
 

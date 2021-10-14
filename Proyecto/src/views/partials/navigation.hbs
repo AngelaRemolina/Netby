@@ -1,56 +1,30 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-white topbar mb-4 static-top shadow">
   <div class="container">
 
-    <a class="navbar-brand" href="/dashboard">NetBy</a>
 
     <div class="collapse navbar-collapse" id="navbarNav">
+      <a class="navbar-brand" href="/">NetBy</a>
       <ul class="navbar-nav">
         {{#if user}}
         <li class="nav-item">
           <a class="nav-link" href="/dashboard">Captures</a>
         </li>
         {{#ifCond user.role 1}}
+
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
             aria-expanded="false">
             Links
           </a>
-          {{!-- TODO: This drop down is to delete. Leave it as an exaple --}}
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="/links">All Links</a></li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-            <li><a class="dropdown-item" href="/links/add">Add a link</a></li>
-          </ul>
-        </li>
-        {{/ifCond}}
+          {{/ifCond}}
 
-        {{#ifCond user.role 0}}
+          {{#ifCond user.role 0}}
         <li class="nav-item">
           <a class="nav-link" href="/dashboard/users">Users</a>
         </li>
         {{/ifCond}}
       </ul>
     </div>
-
-    <!-- Topbar Search -->
-    {{!--
-    <!-- Sidebar Toggle (Topbar) -->
-    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-      <i class="fa fa-bars"></i>
-    </button>
-    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-      <div class="input-group">
-        <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search"
-          aria-describedby="basic-addon2">
-        <div class="input-group-append">
-          <button class="btn btn-primary" type="button">
-            <i class="fas fa-search fa-sm"></i>
-          </button>
-        </div>
-      </div>
-    </form> --}}
 
     <!-- Topbar Navbar -->
 
