@@ -111,34 +111,65 @@ router.post('/dashboard/capture', isLoggedIn, async (req, res) => {
             var ethernet_data = null;
 
             var frame = captures[i];
-            //TODO: STRUCTURE AND SAVE CAPTURE
-            var dest_src_proto = String(Object.values(frame)[0].Description).split(",");
-            var mac_dest = dest_src_proto[0].substring(13, dest_src_proto[0].length)
-            var mac_source = dest_src_proto[1].substring(9, dest_src_proto[1].length)
-            var proto = dest_src_proto[2].substring(11, dest_src_proto[2].length)
-
-            var dest_src_proto = String(Object.values(frame)[0].IPv4_Packet).split(",");
-            console.log(mac_dest);
-            console.log(mac_source);
-            console.log(proto);
+            frame_dict = Object.values(frame)[0];
+            if ('Description' in Object.values(frame_dict)){
+                var dest_src_proto = String(frame_dict.Description).split(",");
+                mac_dest = dest_src_proto[0].substring(13, dest_src_proto[0].length)
+                mac_source = dest_src_proto[1].substring(9, dest_src_proto[1].length)
+                proto = dest_src_proto[2].substring(11, dest_src_proto[2].length)
+            }
+            if ('IPv4_Packet' in Object.values(frame_dict)){
+                var ipv4_src_target = String(frame_dict.IPv4_Packet).split(",");
+                ipv4_sorce = ipv4_src_target[4].substring(9, ipv4_src_target[4].length)
+                ipv4_target = ipv4_src_target[5].substring(9, ipv4_src_target[5].length)
+                console.log(ipv4_sorce);
+                console.log(ipv4_target);
+            }
+            if ('ICMP_Packet' in Object.values(frame_dict)){
+                icmp_packet = String(frame_dict.ICMP_Packet);
+            }
+            if ('ICMP_Data' in Object.values(frame_dict)){
+                icmp_data = String(frame_dict.ICMP_Data);
+            }
+            if ('TCP_Segment' in Object.values(frame_dict)){
+                tcp_segment = String(frame_dict.TCP_Segment);
+            }
+            if ('TCP_flags' in Object.values(frame_dict)){
+                tcp_flags = String(frame_dict.tcp_flags);
+            }
+            if ('TCP_Data' in Object.values(frame_dict)){
+                tcp_data = String(frame_dict.TCP_Data);
+            }
+            if ('HTTP_Data' in Object.values(frame_dict)){
+                http_data = String(frame_dict.HTTP_Data);
+            }
+            if ('UDP_Segment' in Object.values(frame_dict)){
+                udp_segment = String(frame_dict.UDP_Segment);
+            }
+            if ('Other_IPv4_Data' in Object.values(frame_dict)){
+                other_ipv4_data = String(frame_dict.Other_IPv4_Data);
+            }
+            if ('Ethernet_Data' in Object.values(frame_dict)){
+                ethernet_data = String(frame_dict.Ethernet_Data);
+            }
             const newCapture = {
                 user_ID_U: req.user.ID_U,
                 start_time: start.toJSON(),
                 end_time: end.toJSON(),
                 mac_dest: mac_dest,
                 mac_source: mac_source,
-                proto: proto/*,
-                    ipv4_sorce : ipv4_sorce,
-                    ipv4_target : ipv4_target,
-                    icmp_packet : icmp_packet,
-                    icmp_data : icmp_data,
-                    tcp_segment : tcp_segment,
-                    tcp_flags : tcp_flags,
-                    tcp_data : tcp_data,
-                    http_data : http_data,
-                    udp_segment : udp_segment,
-                    other_ipv4_data : other_ipv4_data,
-                    ethernet_data : ethernet_data*/
+                proto: proto,
+                ipv4_sorce : ipv4_sorce,
+                ipv4_target : ipv4_target,
+                icmp_packet : icmp_packet,
+                icmp_data : icmp_data,
+                tcp_segment : tcp_segment,
+                tcp_flags : tcp_flags,
+                tcp_data : tcp_data,
+                http_data : http_data,
+                udp_segment : udp_segment,
+                other_ipv4_data : other_ipv4_data,
+                ethernet_data : ethernet_data
             };
 
             await pool.query('INSERT INTO capture set ?', [newCapture]);
