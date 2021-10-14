@@ -97,7 +97,7 @@
                                         <div class="table-responsive">
                                             <table class="table table-bordered" id="dataTable" width="100%"
                                                 cellspacing="0">
-                                                
+
                                                 {{#ifCond user.role 0}}
                                                 <thead>
                                                     <tr id="table-header" class="">
@@ -189,8 +189,59 @@
         </div>
         <!-- End of Main Content -->
 
+<!-- The Modal -->
+<div class="modal" id="DetailsModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Modal Heading</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+          <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Firstname</th>
+        <th>Lastname</th>
+        <th>Email</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>John</td>
+        <td>Doe</td>
+        <td>john@example.com</td>
+      </tr>
+      <tr>
+        <td>Mary</td>
+        <td>Moe</td>
+        <td>mary@example.com</td>
+      </tr>
+      <tr>
+        <td>July</td>
+        <td>Dooley</td>
+        <td>july@example.com</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+</div>
+
         <!-- Details Modal-->
-        <div class="modal fade" id="DetailsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        <div class="modal fade" id="" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
             aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -201,7 +252,44 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        {{!Aqui van los datos de la captura}}
+
+                        <thead>
+                            <tr id="table-header" class="">
+                                <th data-priority="1">ID Capture</th>
+                                <th data-priority="2">Email</th>
+                                <th data-priority="3">Start time</th>
+                                <th data-priority="4">End time</th>
+                                <th data-priority="5">More details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each captures}}
+                            <tr>
+                                <td>
+                                    {{ID_C}}
+                                </td>
+                                <td>
+                                    {{email}}
+                                </td>
+                                <td>
+                                    {{start_time}}
+                                </td>
+                                <td>
+                                    {{end_time}}
+                                </td>
+                                <td>
+                                    <div class="header-tools">
+                                        <div class="tools">
+                                            <button>
+                                                <a data-toggle="modal" data-target="#DetailsModal">></a>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
