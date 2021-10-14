@@ -44,6 +44,7 @@ app.use(passport.session());
 app.use((req, res, next) => {
     app.locals.success = req.flash('success');
     app.locals.message = req.flash('message');
+    app.locals.sleeptime = req.flash('sleeptime');
     app.locals.user = req.user;
     app.locals.database =  require('./database');
     next();
