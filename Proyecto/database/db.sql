@@ -21,53 +21,35 @@ ALTER TABLE user
 -- -----------------------------------------------------
 -- Table Capture
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS Capture (
+CREATE TABLE IF NOT EXISTS capture (
   ID_C INT NOT NULL COMMENT 'Numero que con el que se identifica la captura',
   user_ID_U INT NOT NULL,
   start_time VARCHAR(45) NOT NULL COMMENT 'Tiempo en el que se empezo la captura',
   end_time VARCHAR(45) NOT NULL COMMENT 'Tiempo en el que se termina  la captura',
+  mac_dest VARCHAR(20),
+  mac_source VARCHAR(20),
+  proto VARCHAR(20),
+  ipv4_sorce VARCHAR(20),
+  ipv4_target VARCHAR(20),
+  icmp_packet VARCHAR(100),
+  icmp_data VARCHAR(200),
+  tcp_segment VARCHAR(200),
+  tcp_flags VARCHAR(200),
+  tcp_data VARCHAR(200),
+  http_data VARCHAR(200),
+  udp_segment VARCHAR(200),
+  other_ipv4_data VARCHAR(200),
+  ethernet_data VARCHAR(200),
   PRIMARY KEY (ID_C, user_ID_U),
-  CONSTRAINT fk_Capture_user1
+  CONSTRAINT fk_capture_user1
     FOREIGN KEY (user_ID_U)
     REFERENCES netby.user (ID_U)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 COMMENT = 'Se requiere sacar el tiempo total de la captura el cual es la resta entre TiempoFin y TiempoInicio.';
 
--- -----------------------------------------------------
--- Table Device
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS netby.Device (
-  ID_D INT NOT NULL COMMENT 'ID con el que el sistema reconocera el dispositivo.',
-  Nombre_D VARCHAR(45) NOT NULL COMMENT 'Nombre del dispositivo, tambien se le puede poner el nombre de su sistema operativo',
-  DirecciónIPv4_D VARCHAR(45) NOT NULL COMMENT 'Dirreccion IPV4 del dispositivo',
-  DirecciónIPv6_D VARCHAR(45) NOT NULL COMMENT 'Dirreccion IPV4 del dispositivo',
-  PRIMARY KEY (ID_D))
-COMMENT = 'Tabla los dispositivos que puedan estar en la red.';
-
-
--- -----------------------------------------------------
--- Table Capture_has_Device
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS netby.Capture_has_Device (
-  Capture_ID_C INT NOT NULL,
-  Capture_user_ID_U INT NOT NULL,
-  Device_ID_D INT NOT NULL,
-  OSI_layer VARCHAR(45) NOT NULL COMMENT 'Indicar en que capa del modelo OSI se ubica.',
-  protocol VARCHAR(45) NOT NULL COMMENT 'Nombre de los  protocolos que se esten registrando.',
-  shared VARCHAR(100) NULL COMMENT 'Correo de la persona que compartió la capura. Si esta captura no es compartida, el campo estará vacio.',
-  PRIMARY KEY (Capture_ID_C, Capture_user_ID_U, Device_ID_D),
-  CONSTRAINT fk_Capture_has_Device_Capture1
-    FOREIGN KEY (Capture_ID_C , Capture_user_ID_U)
-    REFERENCES netby.Capture (ID_C , user_ID_U)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT fk_Capture_has_Device_Device1
-    FOREIGN KEY (Device_ID_D)
-    REFERENCES netby.Device (ID_D)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-COMMENT = 'Tabla que relaciona las capturas con el dispositivo, ya que un dispositivo puede tener muchas capturas y viceversa.\n\nlos atributos estan dispuestos a cambios.';
+ALTER TABLE capture
+  MODIFY ID_C INT NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 1;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
