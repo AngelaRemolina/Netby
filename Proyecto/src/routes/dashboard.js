@@ -17,8 +17,7 @@ router.get('/dashboard', isLoggedIn, async (req, res) => {
     } else if (req.user.role === 1) {
         // Client view code
         const captures = await pool.query('SELECT * FROM capture WHERE user_ID_U = ?', [req.user.ID_U]);
-        const frames = await pool.query('SELECT * FROM frames WHERE user_ID_U = ?', [req.user.ID_U]);
-        res.render('dashboard/captures/dashboard', { captures: captures, frames: frames });
+        res.render('dashboard/captures/dashboard', { captures: captures});
     }
 });
 router.get('/dashboard/listframe/:id', isLoggedIn, async (req, res) => {
