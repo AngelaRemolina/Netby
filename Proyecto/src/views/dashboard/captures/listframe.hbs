@@ -1,0 +1,68 @@
+<table action="/dashboard/listframe/{{capture.ID_C}}" class="table table-bordered" id="dataTable" width="100%">
+    <thead>
+        <tr id="table-header" class="">
+            <th data-priority="1">Mac destination</th>
+            <th data-priority="2">Mac source</th>
+            <th data-priority="3">Protocole</th>
+            <th data-priority="4">IPv4 source</th>
+            <th data-priority="5">IPv4 target</th>
+            <th data-priority="6">Icmp packet</th>
+            <th data-priority="7">Icmp data</th>
+            <th data-priority="8">Tcp segment</th>
+            <th data-priority="9">Tcp flags</th>
+            <th data-priority="10">Tcp data</th>
+            <th data-priority="11">Http data</th>
+            <th data-priority="12">Udp segment</th>
+            <th data-priority="13">Other ipv4 data</th>
+            <th data-priority="14">Ethernet data</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each frame}}
+        <tr>
+            <td>
+                {{mac_dest}}
+            </td>
+            <td>
+                {{mac_source}}
+            </td>
+            <td>
+                {{proto}}
+            </td>
+            <td>
+                {{ipv4_source}}
+            </td>
+            <td>
+                {{ipv4_target}}
+            </td>
+            <td>
+                {{icmp_packet}}
+            </td>
+            <td>
+                {{icmp_data}}
+            </td>
+            <td>
+                {{tcp_segment}}
+            </td>
+            <td>
+                {{tcp_flags}}
+            </td>
+            <td>
+                {{tcp_data}}
+            </td>
+            <td>
+                {{http_data}}
+            </td>
+            <td>
+                {{udp_segment}}
+            </td>
+            <td>
+                {{other_ipv4_data}}
+            </td>
+            <td>
+                {{ethernet_data}}
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>

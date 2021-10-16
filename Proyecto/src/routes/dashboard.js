@@ -13,14 +13,19 @@ router.get('/dashboard', isLoggedIn, async (req, res) => {
         // Admin view code
         const captures = await pool.query('SELECT ID_C,email,start_time,end_time FROM user u, capture c WHERE c.user_id_u = u.id_u');
         console.log(captures);
-        res.render('dashboard/captures/dashboard', {captures});
+        res.render('dashboard/captures/dashboard', { captures });
     } else if (req.user.role === 1) {
         // Client view code
         const captures = await pool.query('SELECT * FROM capture WHERE user_ID_U = ?', [req.user.ID_U]);
-        res.render('dashboard/captures/dashboard', {captures: captures});
+        const frames = await pool.query('SELECT * FROM frames WHERE user_ID_U = ?', [req.user.ID_U]);
+        res.render('dashboard/captures/dashboard', { captures: captures, frames: frames });
     }
-}); 
-
+});
+router.get('/dashboard/listframe/:id', isLoggedIn, async (req, res) => {
+    const { id } = req.params
+    const frame = await pool.query('SELECT * FROM frame WHERE capture_ID_C = ?', [id]);
+    res.render('dashboard/captures/listframe', { frame: frame });
+});
 // Dashboard / captures
 
 router.get('/dashboard/edit/:id', isLoggedIn, async (req, res) => {
@@ -67,15 +72,6 @@ router.get('/dashboard/capture', isLoggedIn, async (req, res) => {
 
 
     });
-
-
-    /* TODO: wait for file to be generated
-    function sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
-    
-    await sleep(35);
-    */
 
 
     fs.readFile('./capture.json', 'utf8', async function (err, data) {
