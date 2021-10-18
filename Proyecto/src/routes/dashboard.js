@@ -5,6 +5,8 @@ const pool = require('../database');
 const helpers = require('../lib/helpers');
 const { isLoggedIn, isNotLoggedIn } = require('../lib/auth');
 var fs = require('fs');
+const { json } = require('express');
+const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
 //Only Dahsboard
 router.get('/dashboard', isLoggedIn, async (req, res) => {
@@ -12,12 +14,12 @@ router.get('/dashboard', isLoggedIn, async (req, res) => {
     if (req.user.role === 0) {
         // Admin view code
         const captures = await pool.query('SELECT ID_C,email,start_time,end_time FROM user u, capture c WHERE c.user_id_u = u.id_u');
-        console.log(captures);
-        res.render('dashboard/captures/dashboard', { captures });
+        const numberCaptures = await pool.query('SELECT COUNT(*) as count FROM capture');
+        res.render('dashboard/captures/dashboard', { captures, numberCaptures: numberCaptures[0].count });
     } else if (req.user.role === 1) {
         // Client view code
         const captures = await pool.query('SELECT * FROM capture WHERE user_ID_U = ?', [req.user.ID_U]);
-        res.render('dashboard/captures/dashboard', { captures: captures});
+        res.render('dashboard/captures/dashboard', { captures: captures });
     }
 });
 router.get('/dashboard/listframe/:id', isLoggedIn, async (req, res) => {
@@ -48,38 +50,32 @@ router.get('/dashboard/delete/:id', isLoggedIn, async (req, res) => {
 });
 
 router.get('/dashboard/capture', isLoggedIn, async (req, res) => {
-
-    // execute sniffer python file to generate json
-    const { spawn } = require('child_process');
-    const childPython = await spawn('python3', ['./packet_sniffer/sniffer.py']);
-
-    // wait for file to be generated
-    //show load bar while waiting
     req.flash('sleeptime', 'Capturing network...');
 
-    // show output in console and alert success or failure
-    childPython.stdout.on('data', (data) => {
-        console.log(`stdout: ${data}`);
-    });
-    childPython.stderr.on('data', (data) => {
-        console.log(`stderr: ${data}`);
-        req.flash('message', 'An error ocurred during the capture.');
-    });
-    childPython.on('close', (code) => {
-        console.log(`Child process exited with code: ${code}`);
-        req.flash('success', 'Capture generated');
+    const getCapture = async () => {
+        try {
+            const response = await fetch('http://127.0.0.1:5000/generate')
+            const resp = await response.json();
+            console.log("Obj returned from server", resp)
+        } catch (error) {
+            console.log('Fetch error: ', error);
+        }
+    }
 
+    getCapture()
+    res.redirect('/dashboard');
+});
 
-    });
+router.get('/dashboard/read_capture', isLoggedIn, async (req, res) => {
 
+    //get capture from python
 
-    fs.readFile('./capture.json', 'utf8', async function (err, data) {
-        if (err) {
-            req.flash('message', 'An error ocurred during the capture.');
-        } else {
-
-            var captures = JSON.parse(data); // array with captures
-
+    fetch('http://127.0.0.1:5000/return_capture')
+        .then(function (response) {
+            return response.json(); // But parse it as JSON this time
+        })
+        .then(async function (captures) {
+            console.log('JS got the capture!');
             var times = Object.values(captures[0]);
             var start_time = times[0][0];
             var end_time = times[0][1];
@@ -110,72 +106,122 @@ router.get('/dashboard/capture', isLoggedIn, async (req, res) => {
                 var tcp_flags = null;
                 var tcp_data = null;
                 var http_data = null;
+                var https_data = null;
+                var ftp_data = null;
+                var ftps_data = null;
+                var smtp_data = null;
+                var pop3_data = null;
                 var udp_segment = null;
+                var dns_data = null;
+                var dhcp_data = null;
                 var other_ipv4_data = null;
                 var ethernet_data = null;
 
                 var frame = captures[i];
                 var frame_dict = Object.values(frame)[0];
-                if (Object.keys(frame_dict).includes('Description')) {
+                var frame_dict_keys = Object.keys(frame_dict);
+                if (frame_dict_keys.includes('Description')) {
                     var dest_src_proto = String(frame_dict.Description).split(",");
                     mac_dest = dest_src_proto[0].substring(13, dest_src_proto[0].length)
                     mac_source = dest_src_proto[1].substring(9, dest_src_proto[1].length)
                     proto = dest_src_proto[2].substring(11, dest_src_proto[2].length)
                 }
-                if (Object.keys(frame_dict).includes('IPv4_Packet')) {
-                    var ipv4_src_target = String(frame_dict.IPv4_Packet).split(",");
+                if (frame_dict_keys.includes('IP_Packet')) {
+                    var ipv4_src_target = String(frame_dict.IP_Packet).split(",");
                     ipv4_source = ipv4_src_target[4].substring(9, ipv4_src_target[4].length)
                     ipv4_target = ipv4_src_target[5].substring(9, ipv4_src_target[5].length)
                 }
-                if (Object.keys(frame_dict).includes('ICMP_Packet')) {
+                if (frame_dict_keys.includes('ICMP_Packet')) {
                     icmp_packet = String(frame_dict.ICMP_Packet);
                     if (icmp_packet.length > 100) {
                         icmp_packet = icmp_packet.substring(0, 98);
                     }
                 }
-                if (Object.keys(frame_dict).includes('ICMP_Data')) {
+                if (frame_dict_keys.includes('ICMP_Data')) {
                     icmp_data = String(frame_dict.ICMP_Data);
                     if (icmp_data.length > 200) {
                         icmp_data = icmp_data.substring(0, 198);
                     }
                 }
-                if (Object.keys(frame_dict).includes('TCP_Segment')) {
+                if (frame_dict_keys.includes('TCP_Segment')) {
                     tcp_segment = String(frame_dict.TCP_Segment);
                     if (tcp_segment.length > 200) {
                         tcp_segment = tcp_segment.substring(0, 198);
                     }
                 }
-                if (Object.keys(frame_dict).includes('TCP_flags')) {
-                    tcp_flags = String(frame_dict.tcp_flags);
+                if (frame_dict_keys.includes('TCP_flags')) {
+                    tcp_flags = String(frame_dict.TCP_flags);
                     if (tcp_flags.length > 200) {
                         tcp_flags = tcp_flags.substring(0, 198);
                     }
                 }
-                if (Object.keys(frame_dict).includes('TCP_Data')) {
+                if (frame_dict_keys.includes('TCP_Data')) {
                     tcp_data = String(frame_dict.TCP_Data);
                     if (tcp_data.length > 200) {
                         tcp_data = tcp_data.substring(0, 198);
                     }
                 }
-                if (Object.keys(frame_dict).includes('HTTP_Data')) {
+                if (frame_dict_keys.includes('HTTP_Data')) {
                     http_data = String(frame_dict.HTTP_Data);
                     if (http_data.length > 200) {
                         http_data = http_data.substring(0, 198);
                     }
                 }
-                if (Object.keys(frame_dict).includes('UDP_Segment')) {
+                if (frame_dict_keys.includes('HTTPS_Data')) {
+                    https_data = String(frame_dict.HTTPS_Data);
+                    if (https_data.length > 200) {
+                        https_data = https_data.substring(0, 198);
+                    }
+                }
+                if (frame_dict_keys.includes('FTP_Data')) {
+                    ftp_data = String(frame_dict.FTP_Data);
+                    if (ftp_data.length > 200) {
+                        ftp_data = ftp_data.substring(0, 198);
+                    }
+                }
+                if (frame_dict_keys.includes('FTPS_Data')) {
+                    ftps_data = String(frame_dict.FTPS_Data);
+                    if (ftps_data.length > 200) {
+                        ftps_data = ftps_data.substring(0, 198);
+                    }
+                }
+                if (frame_dict_keys.includes('SMTP_Data')) {
+                    smtp_data = String(frame_dict.SMTP_Data);
+                    if (smtp_data.length > 200) {
+                        smtp_data = smtp_data.substring(0, 198);
+                    }
+                }
+                if (frame_dict_keys.includes('POP3_Data')) {
+                    pop3_data = String(frame_dict.POP3_Data);
+                    if (pop3_data.length > 200) {
+                        pop3_data = pop3_data.substring(0, 198);
+                    }
+                }
+                if (frame_dict_keys.includes('UDP_Segment')) {
                     udp_segment = String(frame_dict.UDP_Segment);
                     if (udp_segment.length > 200) {
                         udp_segment = udp_segment.substring(0, 198);
                     }
                 }
-                if (Object.keys(frame_dict).includes('Other_IPv4_Data')) {
+                if (frame_dict_keys.includes('DNS_Data')) {
+                    dns_data = String(frame_dict.dns_data);
+                    if (dns_data.length > 200) {
+                        dns_data = dns_data.substring(0, 198);
+                    }
+                }
+                if (frame_dict_keys.includes('DHCP_Data')) {
+                    dhcp_data = String(frame_dict.DHCP_Data);
+                    if (dhcp_data.length > 200) {
+                        dhcp_data = dhcp_data.substring(0, 198);
+                    }
+                }
+                if (frame_dict_keys.includes('Other_IPv4_Data')) {
                     other_ipv4_data = String(frame_dict.Other_IPv4_Data);
                     if (other_ipv4_data.length > 200) {
                         other_ipv4_data = other_ipv4_data.substring(0, 198);
                     }
                 }
-                if (Object.keys(frame_dict).includes('Ethernet_Data')) {
+                if (frame_dict_keys.includes('Ethernet_Data')) {
                     ethernet_data = String(frame_dict.Ethernet_Data);
                     if (ethernet_data.length > 200) {
                         ethernet_data = ethernet_data.substring(0, 198);
@@ -195,6 +241,14 @@ router.get('/dashboard/capture', isLoggedIn, async (req, res) => {
                     tcp_flags: tcp_flags,
                     tcp_data: tcp_data,
                     http_data: http_data,
+                    https_data: https_data,
+                    ftp_data: ftp_data,
+                    ftps_data: ftps_data,
+                    smtp_data: smtp_data,
+                    pop3_data: pop3_data,
+                    udp_segment: udp_segment,
+                    dns_data: dns_data,
+                    dhcp_data: dhcp_data,
                     udp_segment: udp_segment,
                     other_ipv4_data: other_ipv4_data,
                     ethernet_data: ethernet_data
@@ -203,13 +257,11 @@ router.get('/dashboard/capture', isLoggedIn, async (req, res) => {
                 await pool.query('INSERT INTO frame set ?', [newFrame]);
 
             }
-        }
-    });
 
-    //req.flash('success', 'Capture made succesfully!');
+        })
+
     res.redirect('/dashboard');
 });
-
 //Dahsboard / users
 
 router.get('/dashboard/users', isLoggedIn, async (req, res) => {
