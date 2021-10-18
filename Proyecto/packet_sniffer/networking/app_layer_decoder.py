@@ -1,6 +1,6 @@
 
 
-class HTTP:
+class APP_LAYER_DECODER:
 
     def __init__(self, raw_data):
         try:

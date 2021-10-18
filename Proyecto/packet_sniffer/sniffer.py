@@ -9,7 +9,7 @@ from networking.icmp import ICMP
 from networking.tcp import TCP
 from networking.udp import UDP
 from networking.pcap import Pcap
-from networking.http import HTTP
+from networking.app_layer_decoder import APP_LAYER_DECODER
 
 TAB_1 = '\t - '
 TAB_2 = '\t\t - '
@@ -45,8 +45,9 @@ def main(capture_timeout):
         # IPv4
         if eth.proto == 8:
             ipv4 = IPv4(eth.data)
-
-            inner_dict['IPv4_Packet'] = f'Version: {ipv4.version}, Header Length: {ipv4.header_length}, TTL: { ipv4.ttl}, Protocol: {ipv4.proto}, Source: {ipv4.src}, Target: {ipv4.target}'
+            
+            # todo: update database from ipv4 packet to ip packet
+            inner_dict['IP_Packet'] = f'Version: {ipv4.version}, Header Length: {ipv4.header_length}, TTL: { ipv4.ttl}, Protocol: {ipv4.proto}, Source: {ipv4.src}, Target: {ipv4.target}'
 
             # ICMP
             if ipv4.proto == 1:
@@ -56,31 +57,71 @@ def main(capture_timeout):
                 inner_dict['ICMP_Data'] = format_multi_line(icmp.data)
 
             # TCP
-            elif ipv4.proto == 6:
+            if ipv4.proto == 6:
                 tcp = TCP(ipv4.data)
                 inner_dict['TCP_Segment'] = f'Source Port: {tcp.src_port}, Destination Port: {tcp.dest_port}, Sequence: {tcp.sequence}, Acknowledgment: {tcp.acknowledgment}'
                 inner_dict['TCP_flags'] = f'URG: {tcp.flag_urg}, ACK: {tcp.flag_ack}, PSH: {tcp.flag_psh}, RST: {tcp.flag_rst}, SYN: {tcp.flag_syn}, FIN:{tcp.flag_fin}'
 
                 if len(tcp.data) > 0:
-
+                    inner_data = ""
+                    try:
+                        tcp_inner = APP_LAYER_DECODER(tcp.data)
+                        tcp_inner_info = str(tcp_inner.data).split('\n')
+                        tcp_inner_data = ''
+                        for line in tcp_inner_info:
+                            tcp_inner_data += str(line)+","
+                        inner_data = tcp_inner_info
+                    except:
+                        inner_data = format_multi_line(DATA_TAB_3, tcp.data)
                     # HTTP
                     if tcp.src_port == 80 or tcp.dest_port == 80:
-                        try:
-                            http = HTTP(tcp.data)
-                            http_info = str(http.data).split('\n')
-                            http_data = ''
-                            for line in http_info:
-                                http_data += str(line)+","
-                            inner_dict['HTTP_Data'] = http_info
-                        except:
-                            inner_dict['HTTP_Data'] = format_multi_line(DATA_TAB_3, tcp.data)
-                    else:
+                        inner_dict['HTTP_Data'] = inner_data
+                    
+                    # HTTPS
+                    if tcp.src_port == 443 or tcp.dest_port == 443:
+                        inner_dict['HTTPS_Data'] = inner_data # TODO: ADD TO DATABASE
+
+                    # FTP
+                    if tcp.src_port == 20 or tcp.dest_port == 20 or tcp.src_port == 21 or tcp.dest_port == 21:
+                        inner_dict['FTP_Data'] = inner_data # TODO: ADD TO DATABASE
+
+                    # FTPS
+                    if tcp.src_port == 990 or tcp.dest_port == 990:
+                        inner_dict['FTPS_Data'] = inner_data # TODO: ADD TO DATABASE
+
+                    # SMTP
+                    if tcp.src_port == 25 or tcp.dest_port == 25 or tcp.src_port == 465 or tcp.dest_port == 465 or tcp.src_port == 587 or tcp.dest_port == 587 or tcp.src_port == 2525 or tcp.dest_port == 2525:
+                        inner_dict['SMTP_Data'] = inner_data # TODO: ADD TO DATABASE
+
+                    # POP3
+                    if tcp.src_port == 110 or tcp.dest_port == 110 or tcp.src_port == 995 or tcp.dest_port == 995:
+                        inner_dict['POP3_Data'] = inner_data # TODO: ADD TO DATABASE
+                        
+                    if inner_data == "":
                         inner_dict['TCP_Data'] = format_multi_line(DATA_TAB_3, tcp.data)
 
             # UDP
-            elif ipv4.proto == 17:
+            if ipv4.proto == 17:
                 udp = UDP(ipv4.data)
                 inner_dict['UDP_Segment'] = f'Source Port: {udp.src_port}, Destination Port: {udp.dest_port}, Length: {udp.size}'
+                
+                try:
+                    udp_inner = APP_LAYER_DECODER(udp.data)
+                    udp_inner_info = str(udp_inner.data).split('\n')
+                    udp_inner_data = ''
+                    for line in udp_inner_info:
+                        udp_inner_data += str(line)+","
+                    inner_data = udp_inner_info
+                except:
+                    inner_data = format_multi_line(DATA_TAB_3, udp.data)
+
+                # DNS
+                if tcp.src_port == 53 or tcp.dest_port == 53:
+                    inner_dict['DNS_Data'] = inner_data # TODO: ADD TO DATABASE
+
+                # DHCP
+                if tcp.src_port == 67 or tcp.dest_port == 67 or tcp.src_port == 68 or tcp.dest_port == 68:
+                    inner_dict['DHCP_Data'] = inner_data # TODO: ADD TO DATABASE
 
             # Other IPv4
             else:
