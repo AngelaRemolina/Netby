@@ -1,24 +1,29 @@
+<style>
+th, td {color: black;}
+</style>
+<img class="img-fluid max-width: 100% height: auto" src="/img/OSI_layers.png">
+<p align="right">Note: This sniffer does not capture any data from layers 5 and 6. That is why they are not displayed above.</p>
 <table action="/dashboard/listframe/{{capture.ID_C}}" class="table table-bordered" id="dataTable" width="100%">
     <thead>
         <tr id="table-header" class="">
-            <th data-priority="1">MAC destination</th>
-            <th data-priority="2">MAC source</th>
-            <th data-priority="3">IPv4 source</th>
-            <th data-priority="4">IPv4 target</th>
-            <th data-priority="5">TCP segment</th>
-            <th data-priority="6">TCP flags</th>
-            <th data-priority="7">TCP data</th>
-            <th data-priority="8">HTTP data</th>
-            <th data-priority="9">HTTPS data</th>
-            <th data-priority="10">FTP data</th>
-            <th data-priority="11">FTPS data</th>
-            <th data-priority="12">SMTP data</th>
-            <th data-priority="13">POP3 data</th>
-            <th data-priority="14">UDP segment</th>
-            <th data-priority="15">DNS data</th>
-            <th data-priority="16">DHCP data</th>
-            <th data-priority="17">Other ipv4 data</th>
-            <th data-priority="18">Ethernet data</th>
+            <th style="background-color:orange" data-priority="1">MAC destination</th>
+            <th style="background-color:orange" data-priority="2">MAC source</th>
+            <th style="background-color:yellow" data-priority="3">IPv4 source</th>
+            <th style="background-color:yellow" data-priority="4">IPv4 target</th>
+            <th style="background-color:green" data-priority="5">TCP segment</th>
+            <th style="background-color:green" data-priority="6">TCP flags</th>
+            <th style="background-color:green" data-priority="7">TCP data</th>
+            <th style="background-color:#00e600" data-priority="8">HTTP data</th>
+            <th style="background-color:#00e600" data-priority="9">HTTPS data</th>
+            <th style="background-color:#00e600" data-priority="10">FTP data</th>
+            <th style="background-color:#00e600" data-priority="11">FTPS data</th>
+            <th style="background-color:#00e600" data-priority="12">SMTP data</th>
+            <th style="background-color:#00e600" data-priority="13">POP3 data</th>
+            <th style="background-color:green" data-priority="14">UDP segment</th>
+            <th style="background-color:#00e600" data-priority="15">DNS data</th>
+            <th style="background-color:#00e600" data-priority="16">DHCP data</th>
+            <th style="background-color:yellow" -priority="17">Other ipv4 data</th>
+            <th style="background-color:#d00d0d" data-priority="18">Ethernet data</th>
         </tr>
     </thead>
     <tbody>
