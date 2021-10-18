@@ -40,13 +40,12 @@ def main(capture_timeout):
         eth = Ethernet(raw_data)
 
         inner_dict = {}
-        inner_dict['Description']= f'Destination: {eth.dest_mac}, Source: {eth.src_mac}, Protocol: {eth.proto}'
+        inner_dict['Description'] = f'Destination: {eth.dest_mac}, Source: {eth.src_mac}, Protocol: {eth.proto}'
 
         # IPv4
         if eth.proto == 8:
             ipv4 = IPv4(eth.data)
-            
-            # todo: update database from ipv4 packet to ip packet
+
             inner_dict['IP_Packet'] = f'Version: {ipv4.version}, Header Length: {ipv4.header_length}, TTL: { ipv4.ttl}, Protocol: {ipv4.proto}, Source: {ipv4.src}, Target: {ipv4.target}'
 
             # ICMP
@@ -76,35 +75,36 @@ def main(capture_timeout):
                     # HTTP
                     if tcp.src_port == 80 or tcp.dest_port == 80:
                         inner_dict['HTTP_Data'] = inner_data
-                    
+
                     # HTTPS
                     if tcp.src_port == 443 or tcp.dest_port == 443:
-                        inner_dict['HTTPS_Data'] = inner_data # TODO: ADD TO DATABASE
+                        inner_dict['HTTPS_Data'] = inner_data
 
                     # FTP
                     if tcp.src_port == 20 or tcp.dest_port == 20 or tcp.src_port == 21 or tcp.dest_port == 21:
-                        inner_dict['FTP_Data'] = inner_data # TODO: ADD TO DATABASE
+                        inner_dict['FTP_Data'] = inner_data
 
                     # FTPS
                     if tcp.src_port == 990 or tcp.dest_port == 990:
-                        inner_dict['FTPS_Data'] = inner_data # TODO: ADD TO DATABASE
+                        inner_dict['FTPS_Data'] = inner_data
 
                     # SMTP
                     if tcp.src_port == 25 or tcp.dest_port == 25 or tcp.src_port == 465 or tcp.dest_port == 465 or tcp.src_port == 587 or tcp.dest_port == 587 or tcp.src_port == 2525 or tcp.dest_port == 2525:
-                        inner_dict['SMTP_Data'] = inner_data # TODO: ADD TO DATABASE
+                        inner_dict['SMTP_Data'] = inner_data
 
                     # POP3
                     if tcp.src_port == 110 or tcp.dest_port == 110 or tcp.src_port == 995 or tcp.dest_port == 995:
-                        inner_dict['POP3_Data'] = inner_data # TODO: ADD TO DATABASE
-                        
+                        inner_dict['POP3_Data'] = inner_data
+
                     if inner_data == "":
-                        inner_dict['TCP_Data'] = format_multi_line(DATA_TAB_3, tcp.data)
+                        inner_dict['TCP_Data'] = format_multi_line(
+                            DATA_TAB_3, tcp.data)
 
             # UDP
             if ipv4.proto == 17:
                 udp = UDP(ipv4.data)
                 inner_dict['UDP_Segment'] = f'Source Port: {udp.src_port}, Destination Port: {udp.dest_port}, Length: {udp.size}'
-                
+
                 try:
                     udp_inner = APP_LAYER_DECODER(udp.data)
                     udp_inner_info = str(udp_inner.data).split('\n')
@@ -116,30 +116,36 @@ def main(capture_timeout):
                     inner_data = format_multi_line(DATA_TAB_3, udp.data)
 
                 # DNS
-                if tcp.src_port == 53 or tcp.dest_port == 53:
-                    inner_dict['DNS_Data'] = inner_data # TODO: ADD TO DATABASE
+                if udp.src_port == 53 or udp.dest_port == 53:
+                    inner_dict['DNS_Data'] = inner_data
 
                 # DHCP
-                if tcp.src_port == 67 or tcp.dest_port == 67 or tcp.src_port == 68 or tcp.dest_port == 68:
-                    inner_dict['DHCP_Data'] = inner_data # TODO: ADD TO DATABASE
+                if udp.src_port == 67 or udp.dest_port == 67 or udp.src_port == 68 or udp.dest_port == 68:
+                    inner_dict['DHCP_Data'] = inner_data
 
             # Other IPv4
             else:
-                inner_dict['Other_IPv4_Data'] = format_multi_line(DATA_TAB_2, ipv4.data)
+                inner_dict['Other_IPv4_Data'] = format_multi_line(
+                    DATA_TAB_2, ipv4.data)
 
         else:
-            inner_dict['Ethernet_Data'] = format_multi_line(DATA_TAB_1, eth.data)
-        
-        capture.append({f'Ethernet Frame {cont}':inner_dict})
+            # TODO: how to catch ipv6, arp?
+            print(eth.proto)
+            inner_dict['Ethernet_Data'] = format_multi_line(
+                DATA_TAB_1, eth.data)
+
+        capture.append({f'Ethernet Frame {cont}': inner_dict})
 
     end_time = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
-    capture.insert(0,{'times':[start_time, end_time]})
+    capture.insert(0, {'times': [start_time, end_time]})
     with open('capture.json', 'w') as outfile:
         json.dump(capture, outfile)
 
     pcap.close()
 
 # Formats multi-line data
+
+
 def format_multi_line(prefix, string, size=80):
     size -= len(prefix)
     if isinstance(string, bytes):
@@ -149,4 +155,4 @@ def format_multi_line(prefix, string, size=80):
     return '\n'.join([prefix + line for line in textwrap.wrap(string, size)])
 
 
-main(30) #capture during 30 seconds
+main(30)  # capture during 30 seconds
