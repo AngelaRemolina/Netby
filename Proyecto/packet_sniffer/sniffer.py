@@ -59,7 +59,7 @@ def main(capture_timeout):
             if ipv4.proto == 6:
                 tcp = TCP(ipv4.data)
                 inner_dict['TCP_Segment'] = f'Source Port: {tcp.src_port}, Destination Port: {tcp.dest_port}, Sequence: {tcp.sequence}, Acknowledgment: {tcp.acknowledgment}'
-                inner_dict['TCP_flags'] = f'URG: {tcp.flag_urg}, ACK: {tcp.flag_ack}, PSH: {tcp.flag_psh}, RST: {tcp.flag_rst}, SYN: {tcp.flag_syn}, FIN:{tcp.flag_fin}'
+                inner_dict['TCP_flags'] = f'URG: {tcp.flag_urg},\nACK: {tcp.flag_ack},\nPSH: {tcp.flag_psh},\nRST: {tcp.flag_rst},\nSYN: {tcp.flag_syn},\nFIN:{tcp.flag_fin}'
 
                 if len(tcp.data) > 0:
                     inner_data = ""

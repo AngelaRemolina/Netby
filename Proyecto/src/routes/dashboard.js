@@ -204,7 +204,7 @@ router.get('/dashboard/read_capture', isLoggedIn, async (req, res) => {
                     }
                 }
                 if (frame_dict_keys.includes('DNS_Data')) {
-                    dns_data = String(frame_dict.dns_data);
+                    dns_data = String(frame_dict.DNS_Data);
                     if (dns_data.length > 200) {
                         dns_data = dns_data.substring(0, 198);
                     }
