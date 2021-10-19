@@ -12,7 +12,6 @@ def generate():
     if request.method == 'GET':
         json_capture = main(15)  # capture during 30 seconds
         print("Json generated!")
-        print(json_capture)
         return jsonify(json_capture)
         # return 'OK', 200
 

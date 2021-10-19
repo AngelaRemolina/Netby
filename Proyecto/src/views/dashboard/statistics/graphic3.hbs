@@ -1,10 +1,10 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@latest/dist/Chart.min.js"></script>
 
 <p style="color:white" id="datax">
-    {{users_list}}
+    {{headers}}
 </p>
 <p style="color:white" id="datay">
-    {{counts_list}}
+    {{counts}}
 </p>
 
 <canvas id="graph"></canvas>
@@ -18,21 +18,21 @@
     console.log(datay);
 
     var chart = new Chart(myCanvas, {
-        type: "bar",
+        type: "pie",
         data: {
             labels: datax.split(","), //usuarios
             datasets: [
                 {
                     label: "Number of captures per user",
                     backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                        'rgba(255, 159, 64, 0.2)'
+                        'rgba(255, 99, 132, 2)',
+                        'rgba(54, 162, 235, 2)',
+                        'rgba(255, 206, 86, 2)',
+                        'rgba(75, 192, 192, 2)',
+                        'rgba(153, 102, 255, 2)',
+                        'rgba(255, 159, 64, 2)'
                     ],
-                    borderColor: "rgb(0,255,0)",
+                    borderColor: "rgb(0,0,0)",
                     data: datay.split(",")//data
                 }
             ]
