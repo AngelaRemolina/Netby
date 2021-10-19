@@ -10,5 +10,11 @@ module.exports = {
             return next();
         }
         return res.redirect('/profile')
+    },
+    isNotAdmin(req, res, next){
+        if (req.user.role == 0) {
+            return next();
+        }
+        return res.redirect('/dashboard')
     }
 }

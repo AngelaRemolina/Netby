@@ -20,8 +20,6 @@
 
                     <!-- Content Row -->
                     <div class="row">
-
-                        <!-- Earnings (Monthly) Card Example -->
                         <div class="col-xl-3 col-md-6 mb-4">
                             <div class="card border-left-info shadow h-100 py-2">
                                 <div class="card-body">
@@ -45,8 +43,6 @@
                                 </div>
                             </div>
                         </div>
-
-
                     </div>
 
                     <!-- Content Row -->
@@ -88,6 +84,7 @@
                                                         <th data-priority="3">Start time</th>
                                                         <th data-priority="4">End time</th>
                                                         <th data-priority="5">More details</th>
+                                                        <th data-priority="6">Actions</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -111,8 +108,15 @@
                                                                     <button>
                                                                         <a href="/dashboard/listframe/{{ID_C}}">></a>
                                                                     </button>
+
                                                                 </div>
                                                             </div>
+                                                        </td>
+                                                        <td>
+                                                            <button>
+                                                                <a class="material-icons "
+                                                                    href="/dashboard/deleteCapture/{{ID_C}}">delete</a>
+                                                            </button>
                                                         </td>
                                                     </tr>
                                                     {{/each}}
@@ -125,6 +129,7 @@
                                                         <th data-priority="2">Start time</th>
                                                         <th data-priority="3">End time</th>
                                                         <th data-priority="4">More details</th>
+                                                        <th data-priority="5">Actions</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -147,6 +152,12 @@
                                                                     </button>
                                                                 </div>
                                                             </div>
+                                                        </td>
+                                                        <td>
+                                                            <button>
+                                                                <a class="material-icons "
+                                                                    href="/dashboard/deleteCapture/{{ID_C}}">delete</a>
+                                                            </button>
                                                         </td>
                                                     </tr>
                                                     {{/each}}

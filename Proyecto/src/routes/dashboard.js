@@ -3,14 +3,13 @@ const router = express.Router();
 
 const pool = require('../database');
 const helpers = require('../lib/helpers');
-const { isLoggedIn, isNotLoggedIn } = require('../lib/auth');
+const { isLoggedIn, isNotLoggedIn, isNotAdmin } = require('../lib/auth');
 var fs = require('fs');
 const { json } = require('express');
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
 //Only Dahsboard
 router.get('/dashboard', isLoggedIn, async (req, res) => {
-    // TODO: VIEW OF CAPTURES IN DASHBOARD 
     if (req.user.role === 0) {
         // Admin view code
         const captures = await pool.query('SELECT ID_C,email,start_time,end_time FROM user u, capture c WHERE c.user_id_u = u.id_u');
@@ -19,7 +18,8 @@ router.get('/dashboard', isLoggedIn, async (req, res) => {
     } else if (req.user.role === 1) {
         // Client view code
         const captures = await pool.query('SELECT * FROM capture WHERE user_ID_U = ?', [req.user.ID_U]);
-        res.render('dashboard/captures/dashboard', { captures: captures });
+        const numberCaptures = await pool.query('SELECT COUNT(*) as count FROM capture WHERE user_ID_U = ?', [req.user.ID_U]);
+        res.render('dashboard/captures/dashboard', { captures: captures, numberCaptures: numberCaptures[0].count });
     }
 });
 router.get('/dashboard/listframe/:id', isLoggedIn, async (req, res) => {
@@ -29,24 +29,26 @@ router.get('/dashboard/listframe/:id', isLoggedIn, async (req, res) => {
 });
 // Dashboard / captures
 
-router.get('/dashboard/edit/:id', isLoggedIn, async (req, res) => {
-    const { id } = req.params;
-    // TODO: get edit capture
-    // select to show
-    res.render('dashboard/captures/edit');
-});
-
-router.post('/dashboard/edit/:id', isLoggedIn, async (req, res) => {
-    // TODO: post edit capture
-    // update to edit
-    res.redirect('dashboard/captures/dashboard');
-});
-
-router.get('/dashboard/delete/:id', isLoggedIn, async (req, res) => {
+router.get('/dashboard/deleteCapture/:id', isLoggedIn, async (req, res) => {
     const { id } = req.params;
 
-    // TODO: delete capture 
-    res.redirect('dashboard/captures/dashboard');
+    if (req.user.role == 1) {
+        const isOwN = await pool.query('SELECT * FROM capture WHERE ID_C = ? AND user_id_u = ?', [id, req.user.ID_U]);
+        console.log(isOwN)
+        if (isOwN == '') {
+            console.log('you cant delete this capture because no is yours')
+            req.flash('message', 'You cant delete this capture because not is yours');
+            res.redirect('/dashboard');
+        }
+    } else {
+        await pool.query('SET FOREIGN_KEY_CHECKS = 0');
+        await pool.query('DELETE FROM frame WHERE capture_ID_C = ?', [id]);
+        await pool.query('DELETE FROM capture WHERE ID_C = ?', [id]);
+        await pool.query('SET FOREIGN_KEY_CHECKS = 1');
+
+        req.flash('success', 'Capture deleted successfully');
+        res.redirect('/dashboard');
+    }
 });
 
 router.get('/dashboard/capture', isLoggedIn, async (req, res) => {
@@ -264,18 +266,18 @@ router.get('/dashboard/read_capture', isLoggedIn, async (req, res) => {
 });
 //Dahsboard / users
 
-router.get('/dashboard/users', isLoggedIn, async (req, res) => {
+router.get('/dashboard/users', isLoggedIn, isNotAdmin, async (req, res) => {
     const users = await pool.query('SELECT * FROM user');// It send to the list and create an array with the users
     res.render('dashboard/users/list', { users: users });
 });
 
-router.get('/dashboard/users/edit/:id', isLoggedIn, async (req, res) => {
+router.get('/dashboard/users/edit/:id', isLoggedIn, isNotAdmin, async (req, res) => {
     const { id } = req.params;
     const users = await pool.query('SELECT * FROM user WHERE ID_U = ?', [id]);
     res.render('./dashboard/users/edit', { user: users[0] });
 });
 
-router.post('/dashboard/users/edit/:id', isLoggedIn, async (req, res) => {
+router.post('/dashboard/users/edit/:id', isLoggedIn, isNotAdmin, async (req, res) => {
     const { id } = req.params;
     const { name, email, role } = req.body;
     const editUser = {
@@ -288,7 +290,7 @@ router.post('/dashboard/users/edit/:id', isLoggedIn, async (req, res) => {
     res.redirect('/dashboard/users');
 });
 
-router.get('/dashboard/users/delete/:id', isLoggedIn, async (req, res) => {
+router.get('/dashboard/users/delete/:id', isLoggedIn, isNotAdmin, async (req, res) => {
     const { id } = req.params;
     if (id == req.user.ID_U) {
         req.flash('message', "You can't delete yourself!");
@@ -300,11 +302,11 @@ router.get('/dashboard/users/delete/:id', isLoggedIn, async (req, res) => {
     }
 });
 
-router.get('/dashboard/users/add', isLoggedIn, (req, res) => {
+router.get('/dashboard/users/add', isLoggedIn, isNotAdmin, (req, res) => {
     res.render('dashboard/users/add');
 });
 
-router.post('/dashboard/users/add', isLoggedIn, async (req, res) => {
+router.post('/dashboard/users/add', isLoggedIn, isNotAdmin, async (req, res) => {
     const { name, email, role, password } = req.body;
     const newUser = {
         name,
