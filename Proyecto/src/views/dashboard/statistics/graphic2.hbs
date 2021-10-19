@@ -1,0 +1,38 @@
+<script src="https://cdn.jsdelivr.net/npm/chart.js@latest/dist/Chart.min.js"></script>
+
+<p style="color:white" id="datax">
+    {{id_list}}
+</p>
+<p style="color:white" id="datay">
+    {{counts_list}}
+</p>
+<canvas id="graph"></canvas>
+
+<script>
+    let myCanvas = document.getElementById("graph").getContext("2d");
+    let datax = document.getElementById("datax").innerText;
+    let datay = document.getElementById("datay").innerText;
+
+    console.log(datax);
+    console.log(datay);
+
+    var chart = new Chart(myCanvas, {
+        type: "radar",
+        data: {
+            labels: datax.split(","), 
+            datasets: [
+                {
+                    label: "Number of frames per capture",
+                    backgroudColor: "rgb(0,255,255)",
+                    borderColor: "rgb(255,0,0)",
+                    data: datay.split(",")
+                }
+            ]
+        }
+    })
+    document.getElementById("graph").style.width="1000px";
+    document.getElementById("graph").style.height="1000px";
+    document.getElementById("graph").style.color="black";
+    //document.getElementById("graph").style="black";
+
+</script>
