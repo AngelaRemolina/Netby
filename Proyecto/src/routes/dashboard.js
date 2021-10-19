@@ -6,6 +6,7 @@ const helpers = require('../lib/helpers');
 const { isLoggedIn, isNotLoggedIn, isNotAdmin } = require('../lib/auth');
 var fs = require('fs');
 const { json } = require('express');
+const { nextTick } = require('process');
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
 //Only Dahsboard
@@ -38,6 +39,13 @@ router.get('/dashboard/deleteCapture/:id', isLoggedIn, async (req, res) => {
         if (isOwN == '') {
             console.log('you cant delete this capture because no is yours')
             req.flash('message', 'You cant delete this capture because not is yours');
+            res.redirect('/dashboard');
+        } else {
+            await pool.query('SET FOREIGN_KEY_CHECKS = 0');
+            await pool.query('DELETE FROM frame WHERE capture_ID_C = ?', [id]);
+            await pool.query('DELETE FROM capture WHERE ID_C = ?', [id]);
+            await pool.query('SET FOREIGN_KEY_CHECKS = 1');
+            req.flash('success', 'Capture deleted successfully');
             res.redirect('/dashboard');
         }
     } else {
