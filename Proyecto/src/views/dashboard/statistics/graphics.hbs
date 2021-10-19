@@ -1,0 +1,41 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js"
+    integrity="sha512-Wt1bJGtlnMtGP0dqNFH1xlkLBNpEodaiQ8ZN5JLA5wpc1sUlk/O5uuOMNgvzddzkpvZ9GLyYNa8w2s7rqiTk5Q=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<p style="color:white" id="datax">
+    {{users_list}}
+</p>
+<p style="color:white" id="datay">
+    {{counts_list}}
+</p>
+<canvas id="a"></canvas>
+<canvas id="graph"></canvas>
+
+<script>
+    let myCanvas = document.getElementById("graph").getContext("2d");
+    let datax = document.getElementById("datax").innerText;
+    let datay = document.getElementById("datay").innerText;
+
+    console.log(datax);
+    console.log(datay);
+
+    var chart = new Chart(myCanvas, {
+        type: "bar",
+        data: {
+            labels: datax.split(","), //usuarios
+            datasets: [
+                {
+                    label: "Number of captures per user",
+                    backgroudColor: "rgb(0,0,0)",
+                    borderColor: "rgb(0,255,0)",
+                    data: datay.split(",")//data
+                }
+            ]
+        }
+    })
+    document.getElementById("graph").style.width="1000px";
+    document.getElementById("graph").style.height="1000px";
+    document.getElementById("graph").style.color="black";
+    //document.getElementById("graph").style="black";
+
+</script>
