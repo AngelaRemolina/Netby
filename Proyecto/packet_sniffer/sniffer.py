@@ -1,3 +1,4 @@
+import os
 import socket
 import textwrap
 import time
@@ -53,7 +54,7 @@ def main(capture_timeout):
                 icmp = ICMP(ipv4.data)
 
                 inner_dict['ICMP_Packet'] = f'Type: {icmp.type}, Code: {icmp.code}, Checksum: {icmp.checksum}'
-                inner_dict['ICMP_Data'] = format_multi_line(icmp.data)
+                inner_dict['ICMP_Data'] = format_multi_line(DATA_TAB_3,icmp.data)
 
             # TCP
             if ipv4.proto == 6:
@@ -69,7 +70,7 @@ def main(capture_timeout):
                         tcp_inner_data = ''
                         for line in tcp_inner_info:
                             tcp_inner_data += str(line)+","
-                        inner_data = tcp_inner_info
+                        inner_data = tcp_inner_data
                     except:
                         inner_data = format_multi_line(DATA_TAB_3, tcp.data)
                     # HTTP
@@ -96,9 +97,8 @@ def main(capture_timeout):
                     if tcp.src_port == 110 or tcp.dest_port == 110 or tcp.src_port == 995 or tcp.dest_port == 995:
                         inner_dict['POP3_Data'] = inner_data
 
-                    if inner_data == "":
-                        inner_dict['TCP_Data'] = format_multi_line(
-                            DATA_TAB_3, tcp.data)
+                    
+                    inner_dict['TCP_Data'] = format_multi_line(DATA_TAB_3, tcp.data)
 
             # UDP
             if ipv4.proto == 17:
@@ -125,14 +125,12 @@ def main(capture_timeout):
 
             # Other IPv4
             else:
-                inner_dict['Other_IPv4_Data'] = format_multi_line(
-                    DATA_TAB_2, ipv4.data)
+                inner_dict['Other_IPv4_Data'] = format_multi_line(DATA_TAB_2, ipv4.data)
 
         else:
             # TODO: how to catch ipv6, arp?
-            print(eth.proto)
-            inner_dict['Ethernet_Data'] = format_multi_line(
-                DATA_TAB_1, eth.data)
+            # print(eth.proto)
+            inner_dict['Ethernet_Data'] = format_multi_line(DATA_TAB_1, eth.data)
 
         capture.append({f'Ethernet Frame {cont}': inner_dict})
 
@@ -154,6 +152,3 @@ def format_multi_line(prefix, string, size=80):
         if size % 2:
             size -= 1
     return '\n'.join([prefix + line for line in textwrap.wrap(string, size)])
-
-
-
