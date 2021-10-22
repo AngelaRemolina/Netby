@@ -16,7 +16,6 @@
 
     console.log(datax);
     console.log(datay);
-
     var chart = new Chart(myCanvas, {
         type: "pie",
         data: {
@@ -36,9 +35,7 @@
                     data: datay.split(",")//data
                 }
             ]
-        }
-        
-
+        },
     })
     document.getElementById("graph").style.width = "1000px";
     document.getElementById("graph").style.height = "1000px";

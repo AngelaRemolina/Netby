@@ -149,9 +149,6 @@ router.get('/dashboard/read_capture', isLoggedIn, async (req, res) => {
                 }
                 if (frame_dict_keys.includes('ICMP_Data')) {
                     icmp_data = String(frame_dict.ICMP_Data);
-                    if (icmp_data.length > 200) {
-                        icmp_data = icmp_data.substring(0, 198);
-                    }
                 }
                 if (frame_dict_keys.includes('TCP_Segment')) {
                     tcp_segment = String(frame_dict.TCP_Segment);
@@ -167,45 +164,24 @@ router.get('/dashboard/read_capture', isLoggedIn, async (req, res) => {
                 }
                 if (frame_dict_keys.includes('TCP_Data')) {
                     tcp_data = String(frame_dict.TCP_Data);
-                    if (tcp_data.length > 200) {
-                        tcp_data = tcp_data.substring(0, 198);
-                    }
                 }
                 if (frame_dict_keys.includes('HTTP_Data')) {
                     http_data = String(frame_dict.HTTP_Data);
-                    if (http_data.length > 200) {
-                        http_data = http_data.substring(0, 198);
-                    }
                 }
                 if (frame_dict_keys.includes('HTTPS_Data')) {
                     https_data = String(frame_dict.HTTPS_Data);
-                    if (https_data.length > 200) {
-                        https_data = https_data.substring(0, 198);
-                    }
                 }
                 if (frame_dict_keys.includes('FTP_Data')) {
                     ftp_data = String(frame_dict.FTP_Data);
-                    if (ftp_data.length > 200) {
-                        ftp_data = ftp_data.substring(0, 198);
-                    }
                 }
                 if (frame_dict_keys.includes('FTPS_Data')) {
                     ftps_data = String(frame_dict.FTPS_Data);
-                    if (ftps_data.length > 200) {
-                        ftps_data = ftps_data.substring(0, 198);
-                    }
                 }
                 if (frame_dict_keys.includes('SMTP_Data')) {
                     smtp_data = String(frame_dict.SMTP_Data);
-                    if (smtp_data.length > 200) {
-                        smtp_data = smtp_data.substring(0, 198);
-                    }
                 }
                 if (frame_dict_keys.includes('POP3_Data')) {
                     pop3_data = String(frame_dict.POP3_Data);
-                    if (pop3_data.length > 200) {
-                        pop3_data = pop3_data.substring(0, 198);
-                    }
                 }
                 if (frame_dict_keys.includes('UDP_Segment')) {
                     udp_segment = String(frame_dict.UDP_Segment);
@@ -215,27 +191,15 @@ router.get('/dashboard/read_capture', isLoggedIn, async (req, res) => {
                 }
                 if (frame_dict_keys.includes('DNS_Data')) {
                     dns_data = String(frame_dict.DNS_Data);
-                    if (dns_data.length > 200) {
-                        dns_data = dns_data.substring(0, 198);
-                    }
                 }
                 if (frame_dict_keys.includes('DHCP_Data')) {
                     dhcp_data = String(frame_dict.DHCP_Data);
-                    if (dhcp_data.length > 200) {
-                        dhcp_data = dhcp_data.substring(0, 198);
-                    }
                 }
                 if (frame_dict_keys.includes('Other_IPv4_Data')) {
                     other_ipv4_data = String(frame_dict.Other_IPv4_Data);
-                    if (other_ipv4_data.length > 200) {
-                        other_ipv4_data = other_ipv4_data.substring(0, 198);
-                    }
                 }
                 if (frame_dict_keys.includes('Ethernet_Data')) {
                     ethernet_data = String(frame_dict.Ethernet_Data);
-                    if (ethernet_data.length > 200) {
-                        ethernet_data = ethernet_data.substring(0, 198);
-                    }
                 }
                 const newFrame = {
                     capture_ID_C: new_id,
