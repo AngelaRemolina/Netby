@@ -6,53 +6,69 @@ const helpers = require('../lib/helpers');
 const { isLoggedIn, isNotLoggedIn, isNotAdmin } = require('../lib/auth');
 
 router.get('/statistics/graphic1', isLoggedIn, isNotAdmin, async (req, res) => {
-    const captures_count = await pool.query('select count(*) from capture');
-    var headers = Array.from({length: Object.values(captures_count[0])[0]}, (_, i) => i + 1)
-    console.log(headers)
+    var headers = ['HTTP', 'HTTPS', 'FTP', 'DNS', 'SMTP', 'POP3', 'DHCP']
+
     //http
-    http_list = []
     const http_set = await pool.query('SELECT sum(LENGTH(tcp_data)) as tcp, sum(LENGTH(http_data)) as http, sum(LENGTH(other_ipv4_data)) as other FROM frame where http_data is not NULL GROUP BY capture_id_c');
+    var sum_http = 0
     for (let i = 0; i < http_set.length; i++) {
         const capture1 = http_set[i];
         var http_bytes = (Object.values(capture1)).reduce((a, b) => a + b, 0);
-        var http_mbs = ((http_bytes*0.001)/1024)/30 //Megabyte per second
-        http_list.push(http_mbs)
-        headers.push(i+1)
+        var http_mbs = ((http_bytes *8* 0.001) / 1024) / 30 //Megabit per second
+        sum_http = sum_http + http_mbs
     }
+
     //https
-    https_list = []
     const https_set = await pool.query('SELECT sum(LENGTH(tcp_data)) as tcp, sum(LENGTH(https_data)) as https, sum(LENGTH(other_ipv4_data)) as other FROM frame where https_data is not NULL GROUP BY capture_id_c');
+    var sum_https = 0
     for (let i = 0; i < https_set.length; i++) {
         const capture2 = https_set[i];
         var https_bytes = (Object.values(capture2)).reduce((a, b) => a + b, 0);
-        var https_mbs = ((https_bytes*0.001)/1024)/30 //Megabyte per second
-        https_list.push(https_mbs)
+        var https_mbs = ((https_bytes *8* 0.001) / 1024) / 30 //Megabit per second
+        sum_https = sum_https + https_mbs
     }
+
     //ftp
-    ftp_list = []
     const ftp_set = await pool.query('SELECT sum(LENGTH(tcp_data)) as tcp, sum(LENGTH(ftp_data)) as https, sum(LENGTH(other_ipv4_data)) as other FROM frame where ftp_data is not NULL GROUP BY capture_id_c');
+    var sum_ftp = 0
     for (let i = 0; i < ftp_set.length; i++) {
         const capture3 = ftp_set[i];
         var ftp_bytes = (Object.values(capture3)).reduce((a, b) => a + b, 0);
-        var ftp_mbs = ((ftp_bytes*0.001)/1024)/30 //Megabyte per second
-        ftp_list.push(ftp_mbs)
+        var ftp_mbs = ((ftp_bytes *8* 0.001) / 1024) / 30 //Megabit per second
+        sum_ftp = sum_ftp + ftp_mbs
     }
 
-    var counts = [http_list,https_list,ftp_list] //[0.2,0.5,0.5,...],[],[],[]
-    console.log(counts)
-    /*
-    var values = data_pie_graph[0];
-    var counts = [values.http, values.https, values.ftp, values.dns, values.smtp, values.pop, values.dhcp]
-    var full_100 = counts.reduce((a, b) => a + b, 0);
-    var http = 'HTTP: ' + String(((values.http * 100) / full_100).toFixed(2)) + '%';
-    var https = 'HTTPS: ' + String(((values.https * 100) / full_100).toFixed(2)) + '%';
-    var ftp = 'FTP: ' + String(((values.ftp * 100) / full_100).toFixed(2)) + '%';
-    var dns = 'DNS: ' + String(((values.dns * 100) / full_100).toFixed(2)) + '%';
-    var smtp = 'SMTP: ' + String(((values.smtp * 100) / full_100).toFixed(2)) + '%';
-    var pop = 'POP3: ' + String(((values.pop * 100) / full_100).toFixed(2)) + '%';
-    var dhcp = 'DHCP: ' + String(((values.dhcp * 100) / full_100).toFixed(2)) + '%';
-    var headers = [http, https, ftp, dns, smtp, pop, dhcp]
-    res.render("dashboard/statistics/graphic3", { headers, counts });*/
+    //dns
+    const dns_set = await pool.query('SELECT sum(LENGTH(dns_data)) as dns FROM frame where dns_data is not NULL');
+    var sum_dns = (((dns_set[0].dns) *8* 0.001) / 1024) / 30 //Megabit per second
+
+    //smtp
+    const smtp_set = await pool.query('SELECT sum(LENGTH(tcp_data)) as tcp, sum(LENGTH(smtp_data)) as smtp, sum(LENGTH(other_ipv4_data)) as other FROM frame where smtp_data is not NULL GROUP BY capture_id_c');
+    var sum_smtp = 0
+    for (let i = 0; i < smtp_set.length; i++) {
+        const capture4 = smtp_set[i];
+        var smtp_bytes = (Object.values(capture4)).reduce((a, b) => a + b, 0);
+        var smtp_mbs = ((smtp_bytes *8* 0.001) / 1024) / 30 //Megabit per second
+        sum_smtp = sum_smtp + smtp_mbs
+    }
+
+    //pop3
+    const pop_set = await pool.query('SELECT sum(LENGTH(tcp_data)) as tcp, sum(LENGTH(pop3_data)) as pop, sum(LENGTH(other_ipv4_data)) as other FROM frame where pop3_data is not NULL GROUP BY capture_id_c');
+    var sum_pop = 0
+    for (let i = 0; i < pop_set.length; i++) {
+        const capture5 = pop_set[i];
+        var pop_bytes = (Object.values(capture5)).reduce((a, b) => a + b, 0);
+        var pop_mbs = ((pop_bytes *8* 0.001) / 1024) / 30 //Megabit per second
+        sum_pop = sum_pop + pop_mbs
+    }
+
+    //DHCP
+    const dhcp_set = await pool.query('SELECT sum(LENGTH(dhcp_data)) as dhcp FROM frame where dhcp_data is not NULL');
+    var sum_dhcp = (((dhcp_set[0].dhcp) *8* 0.001) / 1024) / 30 //Megabit per second
+
+    var counts = [sum_http.toFixed(3), sum_https.toFixed(3), sum_ftp.toFixed(3), sum_dns.toFixed(3), sum_smtp.toFixed(3), sum_pop.toFixed(3), sum_dhcp.toFixed(3)]
+
+    res.render("dashboard/statistics/graphic1", { headers, counts });
 });
 
 router.get('/statistics/graphic2', isLoggedIn, isNotAdmin, async (req, res) => {
@@ -65,9 +81,6 @@ router.get('/statistics/graphic2', isLoggedIn, isNotAdmin, async (req, res) => {
         id_list.push(element.capture_id_c)
         counts_list.push(element.count)
     }
-
-    console.log(id_list);
-    console.log(counts_list);
 
     res.render("dashboard/statistics/graphic2", { id_list, counts_list });
 
