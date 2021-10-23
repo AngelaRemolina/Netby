@@ -1,10 +1,10 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@latest/dist/Chart.min.js"></script>
 
 <p style="color:white" id="datax">
-    {{users_list}}
+    {{headers}}
 </p>
 <p style="color:white" id="datay">
-    {{counts_list}}
+    {{counts}}
 </p>
 
 <canvas id="graph"></canvas>
@@ -16,41 +16,30 @@
 
     console.log(datax);
     console.log(datay);
-
     var chart = new Chart(myCanvas, {
-        type: "bar",
+        type: "pie",
         data: {
             labels: datax.split(","), //usuarios
             datasets: [
                 {
                     label: "Number of captures per user",
                     backgroundColor: [
-                        'rgba(255, 99, 132, 5)',
-                        'rgba(54, 162, 235, 5)',
-                        'rgba(255, 206, 86, 5)',
-                        'rgba(150, 206, 36, 5)',
-                        'rgba(2, 206, 0, 5)',
-                        'rgba(0, 105, 86, 5)',
-                        'rgba(255, 10, 86, 5)'
+                        'rgba(255, 99, 132, 2)',
+                        'rgba(0, 206, 86, 2)',
+                        'rgba(255, 206, 86, 2)',
+                        'rgba(75, 192, 192, 2)',
+                        'rgba(153, 102, 255, 2)',
+                        'rgba(255, 0, 0, 2)',
+                        'rgba(255, 255, 0, 2)'
                     ],
-                    borderColor: "rgb(0,255,0)",
+                    borderColor: "rgb(0,0,0)",
                     data: datay.split(",")//data
                 }
             ]
         },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
-            }
-        }
     })
-    document.getElementById("graph").style.width="1000px";
-    document.getElementById("graph").style.height="1000px";
-    document.getElementById("graph").style.color="black";
-    //document.getElementById("graph").style="black";
+    document.getElementById("graph").style.width = "1000px";
+    document.getElementById("graph").style.height = "1000px";
+    document.getElementById("graph").style.color = "black";
 
 </script>
